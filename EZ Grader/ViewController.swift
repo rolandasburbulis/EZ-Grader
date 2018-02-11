@@ -9,19 +9,30 @@
 import UIKit
 
 class ViewController: UIViewController {
+    let pdfFileName = "swift_tutorial"
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
-    
-    @IBAction func buttonClicked(_ sender: UIButton) {
-        print("Hello, Rolandas!")
-    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    @IBAction func openPDFAction(_ sender: Any) {
+        if let url = Bundle.main.url(forResource: pdfFileName, withExtension: "pdf") {
+            let webView = UIWebView(frame: self.view.frame)
+            let urlRequest = URLRequest(url: url)
+            webView.loadRequest(urlRequest as URLRequest)
+            self.view.addSubview(webView)
+            
+            let pdfViewController = UIViewController()
+            pdfViewController.view.addSubview(webView)
+            pdfViewController.title = pdfFileName
+            self.navigationController?.pushViewController(pdfViewController, animated: true)
+        }
     }
 }
 
