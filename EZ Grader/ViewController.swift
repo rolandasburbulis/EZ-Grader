@@ -6,7 +6,7 @@
 //  Copyright © 2018 RIT. All rights reserved.
 //
 
-//import UIKit
+import UIKit
 import PDFKit
 
 class ViewController: UIViewController {
@@ -89,8 +89,6 @@ class ViewController: UIViewController {
         
         // Add annotation to the first page
         pdfView.document?.page(at: 0)?.addAnnotation(annotation)
-        
-
         
         print(pdfView.document?.page(at: 0)?.annotations.count)
     }

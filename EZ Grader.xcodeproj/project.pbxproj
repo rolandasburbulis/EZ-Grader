@@ -15,7 +15,7 @@
 		84CACB132020310F008D8AB1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB112020310F008D8AB1 /* LaunchScreen.storyboard */; };
 		84CACB1E20203110008D8AB1 /* EZ_GraderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB1D20203110008D8AB1 /* EZ_GraderTests.swift */; };
 		84CACB2920203110008D8AB1 /* EZ_GraderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB2820203110008D8AB1 /* EZ_GraderUITests.swift */; };
-		84CACB3B20301641008D8AB1 /* swift_tutorial.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB3A20301640008D8AB1 /* swift_tutorial.pdf */; };
+		84CACB432033ED7E008D8AB1 /* swift_tutorial.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB422033ED7E008D8AB1 /* swift_tutorial.pdf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,7 +50,7 @@
 		84CACB2420203110008D8AB1 /* EZ GraderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "EZ GraderUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84CACB2820203110008D8AB1 /* EZ_GraderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EZ_GraderUITests.swift; sourceTree = "<group>"; };
 		84CACB2A20203110008D8AB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		84CACB3A20301640008D8AB1 /* swift_tutorial.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = swift_tutorial.pdf; path = ../../../swift_tutorial.pdf; sourceTree = "<group>"; };
+		84CACB422033ED7E008D8AB1 /* swift_tutorial.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = swift_tutorial.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,7 +134,7 @@
 		84CACB3920301468008D8AB1 /* PDFs */ = {
 			isa = PBXGroup;
 			children = (
-				84CACB3A20301640008D8AB1 /* swift_tutorial.pdf */,
+				84CACB422033ED7E008D8AB1 /* swift_tutorial.pdf */,
 			);
 			path = PDFs;
 			sourceTree = "<group>";
@@ -248,7 +248,7 @@
 			files = (
 				84CACB132020310F008D8AB1 /* LaunchScreen.storyboard in Resources */,
 				84CACB102020310F008D8AB1 /* Assets.xcassets in Resources */,
-				84CACB3B20301641008D8AB1 /* swift_tutorial.pdf in Resources */,
+				84CACB432033ED7E008D8AB1 /* swift_tutorial.pdf in Resources */,
 				84CACB0B2020310F008D8AB1 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
