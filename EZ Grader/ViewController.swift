@@ -21,7 +21,6 @@ class ViewController: UIViewController {
         let lastPageBtn = UIBarButtonItem(title: "Last", style: .plain, target: self, action: #selector(lastPage))
         let numberOfPagesBtn = UIBarButtonItem(title: "Number of pages", style: .plain, target: self, action: #selector(numberOfPages))
         let annotationsBtn = UIBarButtonItem(title: "Annotations", style: .plain, target: self, action: #selector(annotations))
-        let x = "dd"
         
         navigationItem.rightBarButtonItems = [firstPageBtn, lastPageBtn, numberOfPagesBtn, annotationsBtn]
     }
