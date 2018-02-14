@@ -6,7 +6,6 @@
 //  Copyright © 2018 RIT. All rights reserved.
 //
 
-import UIKit
 import PDFKit
 
 class ViewController: UIViewController {
@@ -76,7 +75,7 @@ class ViewController: UIViewController {
     }
     
     @objc func annotations() {
-        print(pdfView.document?.page(at: 0)?.annotations.count)
+        print(pdfView.document?.page(at: 0)?.annotations.count ?? -1)
 
         let rect = CGRect(x: 100.0, y: 100.0, width: 100.0, height: 100.0)
         
@@ -90,6 +89,6 @@ class ViewController: UIViewController {
         // Add annotation to the first page
         pdfView.document?.page(at: 0)?.addAnnotation(annotation)
         
-        print(pdfView.document?.page(at: 0)?.annotations.count)
+        print(pdfView.document?.page(at: 0)?.annotations.count ?? -1)
     }
 }
