@@ -2,7 +2,6 @@
 //  ViewController.swift
 //  EZ Grader
 //
-//  Created by admin on 1/29/18.
 //  Copyright © 2018 RIT. All rights reserved.
 //
 
@@ -30,7 +29,7 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func openPDFAction(_ sender: Any) {
+    @IBAction func openPDFAction() {
         // create and add the PDF view
         pdfView = PDFView()
         pdfView.translatesAutoresizingMaskIntoConstraints = false
@@ -57,7 +56,7 @@ class ViewController: UIViewController {
     }
     
     @objc func numberOfPages() {
-        print(pdfView.document?.pageCount ?? 0)
+        print(pdfView.document!.pageCount)
         
         let fileManager = FileManager.default
         
@@ -75,7 +74,7 @@ class ViewController: UIViewController {
     }
     
     @objc func annotations() {
-        print(pdfView.document?.page(at: 0)?.annotations.count ?? -1)
+        print(pdfView.document!.page(at: 0)!.annotations.count)
 
         let rect = CGRect(x: 100.0, y: 100.0, width: 100.0, height: 100.0)
         
@@ -87,8 +86,8 @@ class ViewController: UIViewController {
         annotation.add(path)
         
         // Add annotation to the first page
-        pdfView.document?.page(at: 0)?.addAnnotation(annotation)
+        pdfView.document!.page(at: 0)!.addAnnotation(annotation)
         
-        print(pdfView.document?.page(at: 0)?.annotations.count ?? -1)
+        print(pdfView.document!.page(at: 0)!.annotations.count)
     }
 }
