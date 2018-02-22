@@ -71,7 +71,7 @@ class ViewController: UIViewController {
         }
         catch let error as NSError {
             print("Ooops! Something went wrong: \(error)")
-        }ß
+        }
     }
     
     @objc func annotations() {
