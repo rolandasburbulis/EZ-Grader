@@ -13,27 +13,8 @@
 		84CACB0E2020310F008D8AB1 /* EZ_Grader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB0C2020310F008D8AB1 /* EZ_Grader.xcdatamodeld */; };
 		84CACB102020310F008D8AB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB0F2020310F008D8AB1 /* Assets.xcassets */; };
 		84CACB132020310F008D8AB1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB112020310F008D8AB1 /* LaunchScreen.storyboard */; };
-		84CACB1E20203110008D8AB1 /* EZ_GraderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB1D20203110008D8AB1 /* EZ_GraderTests.swift */; };
-		84CACB2920203110008D8AB1 /* EZ_GraderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB2820203110008D8AB1 /* EZ_GraderUITests.swift */; };
 		84CACB432033ED7E008D8AB1 /* swift_tutorial.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB422033ED7E008D8AB1 /* swift_tutorial.pdf */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		84CACB1A20203110008D8AB1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 84CACAFA2020310F008D8AB1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 84CACB012020310F008D8AB1;
-			remoteInfo = "EZ Grader";
-		};
-		84CACB2520203110008D8AB1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 84CACAFA2020310F008D8AB1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 84CACB012020310F008D8AB1;
-			remoteInfo = "EZ Grader";
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		84CACB022020310F008D8AB1 /* EZ Grader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EZ Grader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,31 +25,11 @@
 		84CACB0F2020310F008D8AB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		84CACB122020310F008D8AB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		84CACB142020310F008D8AB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		84CACB1920203110008D8AB1 /* EZ GraderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "EZ GraderTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		84CACB1D20203110008D8AB1 /* EZ_GraderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EZ_GraderTests.swift; sourceTree = "<group>"; };
-		84CACB1F20203110008D8AB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		84CACB2420203110008D8AB1 /* EZ GraderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "EZ GraderUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		84CACB2820203110008D8AB1 /* EZ_GraderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EZ_GraderUITests.swift; sourceTree = "<group>"; };
-		84CACB2A20203110008D8AB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		84CACB422033ED7E008D8AB1 /* swift_tutorial.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = swift_tutorial.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		84CACAFF2020310F008D8AB1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		84CACB1620203110008D8AB1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		84CACB2120203110008D8AB1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -82,8 +43,6 @@
 			isa = PBXGroup;
 			children = (
 				84CACB042020310F008D8AB1 /* EZ Grader */,
-				84CACB1C20203110008D8AB1 /* EZ GraderTests */,
-				84CACB2720203110008D8AB1 /* EZ GraderUITests */,
 				84CACB032020310F008D8AB1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -92,8 +51,6 @@
 			isa = PBXGroup;
 			children = (
 				84CACB022020310F008D8AB1 /* EZ Grader.app */,
-				84CACB1920203110008D8AB1 /* EZ GraderTests.xctest */,
-				84CACB2420203110008D8AB1 /* EZ GraderUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -111,24 +68,6 @@
 				84CACB0C2020310F008D8AB1 /* EZ_Grader.xcdatamodeld */,
 			);
 			path = "EZ Grader";
-			sourceTree = "<group>";
-		};
-		84CACB1C20203110008D8AB1 /* EZ GraderTests */ = {
-			isa = PBXGroup;
-			children = (
-				84CACB1D20203110008D8AB1 /* EZ_GraderTests.swift */,
-				84CACB1F20203110008D8AB1 /* Info.plist */,
-			);
-			path = "EZ GraderTests";
-			sourceTree = "<group>";
-		};
-		84CACB2720203110008D8AB1 /* EZ GraderUITests */ = {
-			isa = PBXGroup;
-			children = (
-				84CACB2820203110008D8AB1 /* EZ_GraderUITests.swift */,
-				84CACB2A20203110008D8AB1 /* Info.plist */,
-			);
-			path = "EZ GraderUITests";
 			sourceTree = "<group>";
 		};
 		84CACB3920301468008D8AB1 /* PDFs */ = {
@@ -159,42 +98,6 @@
 			productReference = 84CACB022020310F008D8AB1 /* EZ Grader.app */;
 			productType = "com.apple.product-type.application";
 		};
-		84CACB1820203110008D8AB1 /* EZ GraderTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 84CACB3020203110008D8AB1 /* Build configuration list for PBXNativeTarget "EZ GraderTests" */;
-			buildPhases = (
-				84CACB1520203110008D8AB1 /* Sources */,
-				84CACB1620203110008D8AB1 /* Frameworks */,
-				84CACB1720203110008D8AB1 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				84CACB1B20203110008D8AB1 /* PBXTargetDependency */,
-			);
-			name = "EZ GraderTests";
-			productName = "EZ GraderTests";
-			productReference = 84CACB1920203110008D8AB1 /* EZ GraderTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		84CACB2320203110008D8AB1 /* EZ GraderUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 84CACB3320203110008D8AB1 /* Build configuration list for PBXNativeTarget "EZ GraderUITests" */;
-			buildPhases = (
-				84CACB2020203110008D8AB1 /* Sources */,
-				84CACB2120203110008D8AB1 /* Frameworks */,
-				84CACB2220203110008D8AB1 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				84CACB2620203110008D8AB1 /* PBXTargetDependency */,
-			);
-			name = "EZ GraderUITests";
-			productName = "EZ GraderUITests";
-			productReference = 84CACB2420203110008D8AB1 /* EZ GraderUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -208,16 +111,6 @@
 					84CACB012020310F008D8AB1 = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
-					};
-					84CACB1820203110008D8AB1 = {
-						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 84CACB012020310F008D8AB1;
-					};
-					84CACB2320203110008D8AB1 = {
-						CreatedOnToolsVersion = 9.2;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 84CACB012020310F008D8AB1;
 					};
 				};
 			};
@@ -235,8 +128,6 @@
 			projectRoot = "";
 			targets = (
 				84CACB012020310F008D8AB1 /* EZ Grader */,
-				84CACB1820203110008D8AB1 /* EZ GraderTests */,
-				84CACB2320203110008D8AB1 /* EZ GraderUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -253,20 +144,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		84CACB1720203110008D8AB1 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		84CACB2220203110008D8AB1 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -280,36 +157,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		84CACB1520203110008D8AB1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				84CACB1E20203110008D8AB1 /* EZ_GraderTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		84CACB2020203110008D8AB1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				84CACB2920203110008D8AB1 /* EZ_GraderUITests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		84CACB1B20203110008D8AB1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 84CACB012020310F008D8AB1 /* EZ Grader */;
-			targetProxy = 84CACB1A20203110008D8AB1 /* PBXContainerItemProxy */;
-		};
-		84CACB2620203110008D8AB1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 84CACB012020310F008D8AB1 /* EZ Grader */;
-			targetProxy = 84CACB2520203110008D8AB1 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		84CACB092020310F008D8AB1 /* Main.storyboard */ = {
@@ -468,72 +316,6 @@
 			};
 			name = Release;
 		};
-		84CACB3120203110008D8AB1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = B5X4Y6SGZ8;
-				INFOPLIST_FILE = "EZ GraderTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "RIT.EZ-GraderTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EZ Grader.app/EZ Grader";
-			};
-			name = Debug;
-		};
-		84CACB3220203110008D8AB1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = B5X4Y6SGZ8;
-				INFOPLIST_FILE = "EZ GraderTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "RIT.EZ-GraderTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EZ Grader.app/EZ Grader";
-			};
-			name = Release;
-		};
-		84CACB3420203110008D8AB1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = B5X4Y6SGZ8;
-				INFOPLIST_FILE = "EZ GraderUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "RIT.EZ-GraderUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "EZ Grader";
-			};
-			name = Debug;
-		};
-		84CACB3520203110008D8AB1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = B5X4Y6SGZ8;
-				INFOPLIST_FILE = "EZ GraderUITests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "RIT.EZ-GraderUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = "EZ Grader";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -551,24 +333,6 @@
 			buildConfigurations = (
 				84CACB2E20203110008D8AB1 /* Debug */,
 				84CACB2F20203110008D8AB1 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		84CACB3020203110008D8AB1 /* Build configuration list for PBXNativeTarget "EZ GraderTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				84CACB3120203110008D8AB1 /* Debug */,
-				84CACB3220203110008D8AB1 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		84CACB3320203110008D8AB1 /* Build configuration list for PBXNativeTarget "EZ GraderUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				84CACB3420203110008D8AB1 /* Debug */,
-				84CACB3520203110008D8AB1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
