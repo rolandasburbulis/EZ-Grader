@@ -29,7 +29,7 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func openPDFAction() {
+    @IBAction func openPDFAction(_ sender: Any) {
         // create and add the PDF view
         pdfView = PDFView()
         pdfView.translatesAutoresizingMaskIntoConstraints = false
@@ -56,12 +56,19 @@ class ViewController: UIViewController {
     }
     
     @objc func numberOfPages() {
-        print(pdfView.document!.pageCount)
+        // create the alert
+        let alert = UIAlertController(title: "Number of pages in PDF", message: "\(pdfView.document!.pageCount)", preferredStyle: UIAlertControllerStyle.alert)
         
-        let fileManager = FileManager.default
+        // add the actions (buttons)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        
+        // show the alert
+        self.present(alert, animated: true, completion: nil)
+        
+        //let fileManager = FileManager.default
         
         // Get contents in directory: '.' (current one)
-        
+        /*
         do {
             let files = try fileManager.contentsOfDirectory(atPath: Bundle.main.bundlePath)
                 
@@ -70,7 +77,7 @@ class ViewController: UIViewController {
         }
         catch let error as NSError {
             print("Ooops! Something went wrong: \(error)")
-        }
+        }*/
     }
     
     @objc func annotations() {
