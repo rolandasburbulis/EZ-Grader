@@ -7,10 +7,13 @@
 
 import PDFKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIGestureRecognizerDelegate {
     // store our PDFView in a property so we can manipulate it later
     var pdfView: PDFView!
     let pdfFileName = "swift_tutorial"
+    var signingPath: UIBezierPath!
+    var annotationAdded: Bool!
+    var currentAnnotation: PDFAnnotation!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,19 +84,61 @@ class ViewController: UIViewController {
     }
     
     @objc func annotations() {
-        print(pdfView.document!.page(at: 0)!.annotations.count)
-
-        let rect = CGRect(x: 100.0, y: 100.0, width: 100.0, height: 100.0)
-        
-        let annotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
-        annotation.backgroundColor = .blue
-        
-        let pathRect = CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0)
-        let path = UIBezierPath(ovalIn: pathRect)
-        annotation.add(path)
-        
-        // Add annotation to the first page
-        pdfView.document!.page(at: 0)!.addAnnotation(annotation)
+        pdfView.isUserInteractionEnabled = !pdfView.isUserInteractionEnabled
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            annotationAdded = false
+            
+            let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
+            let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
+            let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
+            
+            signingPath = UIBezierPath()
+            signingPath.move(to: touchPageCoordinate)
+        }
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
+            let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
+            let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
+            
+            signingPath.addLine(to: touchPageCoordinate)
+            
+            let rect: CGRect = signingPath.bounds
+            
+            if( annotationAdded ) {
+                pdfView.document?.page(at: 0)?.removeAnnotation(currentAnnotation)
+            }
+                
+            currentAnnotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
+            currentAnnotation.backgroundColor = .blue
+            currentAnnotation.color = .black
+            currentAnnotation.add(signingPath)
+            
+            annotationAdded = true
+            
+            pdfView.document?.page(at: 0)?.addAnnotation(currentAnnotation)
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            let position = touch.location(in: pdfView)
+            signingPath.addLine(to: pdfView.convert(position, to: pdfView.page(for: position, nearest: true)!))
+            
+            pdfView.document?.page(at: 0)?.removeAnnotation(currentAnnotation)
+            
+            let rect = signingPath.bounds
+            let annotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
+            annotation.backgroundColor = .blue
+            annotation.color = .lightGray
+            annotation.add(signingPath)
+            pdfView.document?.page(at: 0)?.addAnnotation(annotation)
+        }
         
         print(pdfView.document!.page(at: 0)!.annotations.count)
     }

@@ -12,7 +12,6 @@
 		84CACB0B2020310F008D8AB1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB092020310F008D8AB1 /* Main.storyboard */; };
 		84CACB0E2020310F008D8AB1 /* EZ_Grader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB0C2020310F008D8AB1 /* EZ_Grader.xcdatamodeld */; };
 		84CACB102020310F008D8AB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB0F2020310F008D8AB1 /* Assets.xcassets */; };
-		84CACB132020310F008D8AB1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB112020310F008D8AB1 /* LaunchScreen.storyboard */; };
 		84CACB432033ED7E008D8AB1 /* swift_tutorial.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB422033ED7E008D8AB1 /* swift_tutorial.pdf */; };
 /* End PBXBuildFile section */
 
@@ -23,7 +22,6 @@
 		84CACB0A2020310F008D8AB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		84CACB0D2020310F008D8AB1 /* EZ_Grader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EZ_Grader.xcdatamodel; sourceTree = "<group>"; };
 		84CACB0F2020310F008D8AB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		84CACB122020310F008D8AB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		84CACB142020310F008D8AB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		84CACB422033ED7E008D8AB1 /* swift_tutorial.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = swift_tutorial.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -63,7 +61,6 @@
 				84CACB072020310F008D8AB1 /* ViewController.swift */,
 				84CACB092020310F008D8AB1 /* Main.storyboard */,
 				84CACB0F2020310F008D8AB1 /* Assets.xcassets */,
-				84CACB112020310F008D8AB1 /* LaunchScreen.storyboard */,
 				84CACB142020310F008D8AB1 /* Info.plist */,
 				84CACB0C2020310F008D8AB1 /* EZ_Grader.xcdatamodeld */,
 			);
@@ -137,7 +134,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84CACB132020310F008D8AB1 /* LaunchScreen.storyboard in Resources */,
 				84CACB102020310F008D8AB1 /* Assets.xcassets in Resources */,
 				84CACB432033ED7E008D8AB1 /* swift_tutorial.pdf in Resources */,
 				84CACB0B2020310F008D8AB1 /* Main.storyboard in Resources */,
@@ -166,14 +162,6 @@
 				84CACB0A2020310F008D8AB1 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		84CACB112020310F008D8AB1 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				84CACB122020310F008D8AB1 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
