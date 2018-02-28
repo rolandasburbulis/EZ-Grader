@@ -135,7 +135,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             let rect = signingPath.bounds
             let annotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
             annotation.backgroundColor = .blue
-            annotation.color = .lightGray
+            annotation.color = .black
             annotation.add(signingPath)
             pdfView.document?.page(at: 0)?.addAnnotation(annotation)
         }
