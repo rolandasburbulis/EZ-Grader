@@ -11,7 +11,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     // store our PDFView in a property so we can manipulate it later
     var pdfView: PDFView!
     let pdfFileName = "swift_tutorial"
-    var signingPath: UIBezierPath!
+    var path: UIBezierPath!
     var annotationAdded: Bool!
     var currentAnnotation: PDFAnnotation!
 
@@ -25,6 +25,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         let annotationsBtn = UIBarButtonItem(title: "Annotations", style: .plain, target: self, action: #selector(annotations))
         
         navigationItem.rightBarButtonItems = [firstPageBtn, lastPageBtn, numberOfPagesBtn, annotationsBtn]
+        
+        let documentProvider = UIDocumentPickerViewController(documentTypes: ["public.image", "public.audio", "public.movie", "public.text", "public.item", "public.content", "public.source-code"], in: .import)
+        documentProvider.delegate = self as? UIDocumentPickerDelegate
+        
+        self.present(documentProvider, animated: true, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -92,23 +97,26 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             annotationAdded = false
             
             let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
-            let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
-            let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
+            //let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
+            //let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
             
-            signingPath = UIBezierPath()
-            signingPath.move(to: touchPageCoordinate)
+            path = UIBezierPath()
+            path.lineWidth = 12
+            //path.move(to: touchPageCoordinate)
+            path.move(to: touchViewCoordinate)
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
-            let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
-            let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
+            //let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
+            //let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
             
-            signingPath.addLine(to: touchPageCoordinate)
+            //path.addLine(to: touchPageCoordinate)
+            path.addLine(to: touchViewCoordinate)
             
-            let rect: CGRect = signingPath.bounds
+            let rect: CGRect = path.bounds
             
             if( annotationAdded ) {
                 pdfView.document?.page(at: 0)?.removeAnnotation(currentAnnotation)
@@ -117,7 +125,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             currentAnnotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
             currentAnnotation.backgroundColor = .blue
             currentAnnotation.color = .black
-            currentAnnotation.add(signingPath)
+            currentAnnotation.add(path)
             
             annotationAdded = true
             
@@ -128,15 +136,17 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let position = touch.location(in: pdfView)
-            signingPath.addLine(to: pdfView.convert(position, to: pdfView.page(for: position, nearest: true)!))
+            //path.addLine(to: pdfView.convert(position, to: pdfView.page(for: position, nearest: true)!))
             
             pdfView.document?.page(at: 0)?.removeAnnotation(currentAnnotation)
             
-            let rect = signingPath.bounds
+            path.addLine(to: position)
+            
+            let rect = path.bounds
             let annotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
             annotation.backgroundColor = .blue
             annotation.color = .black
-            annotation.add(signingPath)
+            annotation.add(path)
             pdfView.document?.page(at: 0)?.addAnnotation(annotation)
         }
         
