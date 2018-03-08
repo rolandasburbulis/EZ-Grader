@@ -7,15 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		229A24B42050CEA00059C5D3 /* avg.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 229A24B22050CEA00059C5D3 /* avg.pdf */; };
 		84CACB062020310F008D8AB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB052020310F008D8AB1 /* AppDelegate.swift */; };
 		84CACB082020310F008D8AB1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB072020310F008D8AB1 /* ViewController.swift */; };
 		84CACB0B2020310F008D8AB1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB092020310F008D8AB1 /* Main.storyboard */; };
 		84CACB0E2020310F008D8AB1 /* EZ_Grader.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB0C2020310F008D8AB1 /* EZ_Grader.xcdatamodeld */; };
 		84CACB102020310F008D8AB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB0F2020310F008D8AB1 /* Assets.xcassets */; };
-		84CACB432033ED7E008D8AB1 /* swift_tutorial.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 84CACB422033ED7E008D8AB1 /* swift_tutorial.pdf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		229A24B22050CEA00059C5D3 /* avg.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = avg.pdf; sourceTree = "<group>"; };
 		84CACB022020310F008D8AB1 /* EZ Grader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EZ Grader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84CACB052020310F008D8AB1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		84CACB072020310F008D8AB1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -23,7 +24,6 @@
 		84CACB0D2020310F008D8AB1 /* EZ_Grader.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EZ_Grader.xcdatamodel; sourceTree = "<group>"; };
 		84CACB0F2020310F008D8AB1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		84CACB142020310F008D8AB1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		84CACB422033ED7E008D8AB1 /* swift_tutorial.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = swift_tutorial.pdf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,7 +70,7 @@
 		84CACB3920301468008D8AB1 /* PDFs */ = {
 			isa = PBXGroup;
 			children = (
-				84CACB422033ED7E008D8AB1 /* swift_tutorial.pdf */,
+				229A24B22050CEA00059C5D3 /* avg.pdf */,
 			);
 			path = PDFs;
 			sourceTree = "<group>";
@@ -135,7 +135,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84CACB102020310F008D8AB1 /* Assets.xcassets in Resources */,
-				84CACB432033ED7E008D8AB1 /* swift_tutorial.pdf in Resources */,
+				229A24B42050CEA00059C5D3 /* avg.pdf in Resources */,
 				84CACB0B2020310F008D8AB1 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

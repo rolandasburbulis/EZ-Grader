@@ -8,28 +8,27 @@
 import PDFKit
 
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
-    // store our PDFView in a property so we can manipulate it later
     var pdfView: PDFView!
-    let pdfFileName = "swift_tutorial"
+    let pdfFileName = "avg"
     var path: UIBezierPath!
-    var annotationAdded: Bool!
     var currentAnnotation: PDFAnnotation!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
-        let firstPageBtn = UIBarButtonItem(title: "First", style: .plain, target: self, action: #selector(firstPage))
-        let lastPageBtn = UIBarButtonItem(title: "Last", style: .plain, target: self, action: #selector(lastPage))
-        let numberOfPagesBtn = UIBarButtonItem(title: "Number of pages", style: .plain, target: self, action: #selector(numberOfPages))
+        let firstPageBtn = UIBarButtonItem(title: "<<", style: .plain, target: self, action: #selector(firstPage))
+        let previousPageBtn = UIBarButtonItem(title: "<", style: .plain, target: self, action: #selector(previousPage))
+        let nextPageBtn = UIBarButtonItem(title: ">", style: .plain, target: self, action: #selector(nextPage))
+        let lastPageBtn = UIBarButtonItem(title: ">>", style: .plain, target: self, action: #selector(lastPage))
         let annotationsBtn = UIBarButtonItem(title: "Annotations", style: .plain, target: self, action: #selector(annotations))
         
-        navigationItem.rightBarButtonItems = [firstPageBtn, lastPageBtn, numberOfPagesBtn, annotationsBtn]
+        navigationItem.rightBarButtonItems = [lastPageBtn, nextPageBtn, previousPageBtn, firstPageBtn]
+        navigationItem.leftBarButtonItems = [annotationsBtn]
         
-        let documentProvider = UIDocumentPickerViewController(documentTypes: ["public.image", "public.audio", "public.movie", "public.text", "public.item", "public.content", "public.source-code"], in: .import)
+        /*let documentProvider = UIDocumentPickerViewController(documentTypes: ["public.image", "public.audio", "public.movie", "public.text", "public.item", "public.content", "public.source-code"], in: .import)
         documentProvider.delegate = self as? UIDocumentPickerDelegate
         
-        self.present(documentProvider, animated: true, completion: nil)
+        self.present(documentProvider, animated: true, completion: nil)*/
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,25 +37,29 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @IBAction func openPDFAction(_ sender: Any) {
-        // create and add the PDF view
-        pdfView = PDFView()
-        pdfView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(pdfView)
+        pdfView = PDFView(frame: UIScreen.main.bounds)
         
-        // make it take up the full screen
-        pdfView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        pdfView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        pdfView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        pdfView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        
-        // load our example PDF and make it display immediately
-        let url = Bundle.main.url(forResource: pdfFileName, withExtension: "pdf")!
-        
-        pdfView.document = PDFDocument(url: url)
+        if let url: URL = Bundle.main.url(forResource: pdfFileName, withExtension: "pdf") {
+            if let pdfDocument: PDFDocument = PDFDocument(url: url) {
+                pdfView.displayMode = .singlePage
+                pdfView.autoScales = true
+                pdfView.document = pdfDocument
+                
+                view.addSubview(pdfView)
+            }
+        }
     }
     
     @objc func firstPage() {
         pdfView.goToFirstPage(nil)
+    }
+    
+    @objc func previousPage() {
+        pdfView.goToPreviousPage(nil)
+    }
+    
+    @objc func nextPage() {
+        pdfView.goToNextPage(nil)
     }
     
     @objc func lastPage() {
@@ -72,54 +75,42 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         // show the alert
         self.present(alert, animated: true, completion: nil)
-        
-        //let fileManager = FileManager.default
-        
-        // Get contents in directory: '.' (current one)
-        /*
-        do {
-            let files = try fileManager.contentsOfDirectory(atPath: Bundle.main.bundlePath)
-                
-                //+ "/EZ Grader")
-            print(files)
-        }
-        catch let error as NSError {
-            print("Ooops! Something went wrong: \(error)")
-        }*/
     }
     
     @objc func annotations() {
+        if(pdfView.isUserInteractionEnabled) {
+            path = UIBezierPath()
+            path.lineWidth = 3
+        } else {
+            currentAnnotation = nil
+        }
+
         pdfView.isUserInteractionEnabled = !pdfView.isUserInteractionEnabled
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
-            annotationAdded = false
-            
             let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
-            //let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
-            //let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
+            let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
+            let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
             
-            path = UIBezierPath()
-            path.lineWidth = 12
-            //path.move(to: touchPageCoordinate)
-            path.move(to: touchViewCoordinate)
+            path.move(to: touchPageCoordinate)
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
-            //let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
-            //let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
+            let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
+            let pdfPageIndexAtTouchedPosition: Int = (pdfView.document?.index(for: pdfPageAtTouchedPosition))!
+            let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
             
-            //path.addLine(to: touchPageCoordinate)
-            path.addLine(to: touchViewCoordinate)
+            path.addLine(to: touchPageCoordinate)
             
             let rect: CGRect = path.bounds
             
-            if( annotationAdded ) {
-                pdfView.document?.page(at: 0)?.removeAnnotation(currentAnnotation)
+            if( currentAnnotation != nil ) {
+                pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.removeAnnotation(currentAnnotation)
             }
                 
             currentAnnotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
@@ -127,29 +118,17 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             currentAnnotation.color = .black
             currentAnnotation.add(path)
             
-            annotationAdded = true
-            
-            pdfView.document?.page(at: 0)?.addAnnotation(currentAnnotation)
+            pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(currentAnnotation)
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
-            let position = touch.location(in: pdfView)
-            //path.addLine(to: pdfView.convert(position, to: pdfView.page(for: position, nearest: true)!))
+            let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
+            let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
+            let pdfPageIndexAtTouchedPosition: Int = (pdfView.document?.index(for: pdfPageAtTouchedPosition))!
             
-            pdfView.document?.page(at: 0)?.removeAnnotation(currentAnnotation)
-            
-            path.addLine(to: position)
-            
-            let rect = path.bounds
-            let annotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
-            annotation.backgroundColor = .blue
-            annotation.color = .black
-            annotation.add(path)
-            pdfView.document?.page(at: 0)?.addAnnotation(annotation)
+            print(pdfView.document!.page(at: pdfPageIndexAtTouchedPosition)!.annotations.count)
         }
-        
-        print(pdfView.document!.page(at: 0)!.annotations.count)
     }
 }
