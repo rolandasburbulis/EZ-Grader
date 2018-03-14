@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		229A24B42050CEA00059C5D3 /* avg.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 229A24B22050CEA00059C5D3 /* avg.pdf */; };
-		38253BC92058E3D500BBDF90 /* different.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 38253BC62058E3D500BBDF90 /* different.pdf */; };
 		38253BCA2058E3D500BBDF90 /* good.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 38253BC72058E3D500BBDF90 /* good.pdf */; };
 		38253BCB2058E3D500BBDF90 /* poor.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 38253BC82058E3D500BBDF90 /* poor.pdf */; };
 		84CACB062020310F008D8AB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB052020310F008D8AB1 /* AppDelegate.swift */; };
@@ -20,7 +19,6 @@
 
 /* Begin PBXFileReference section */
 		229A24B22050CEA00059C5D3 /* avg.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = avg.pdf; sourceTree = "<group>"; };
-		38253BC62058E3D500BBDF90 /* different.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = different.pdf; sourceTree = "<group>"; };
 		38253BC72058E3D500BBDF90 /* good.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = good.pdf; sourceTree = "<group>"; };
 		38253BC82058E3D500BBDF90 /* poor.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = poor.pdf; sourceTree = "<group>"; };
 		84CACB022020310F008D8AB1 /* EZ Grader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EZ Grader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,7 +74,6 @@
 		84CACB3920301468008D8AB1 /* PDFs */ = {
 			isa = PBXGroup;
 			children = (
-				38253BC62058E3D500BBDF90 /* different.pdf */,
 				38253BC72058E3D500BBDF90 /* good.pdf */,
 				38253BC82058E3D500BBDF90 /* poor.pdf */,
 				229A24B22050CEA00059C5D3 /* avg.pdf */,
@@ -143,7 +140,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38253BC92058E3D500BBDF90 /* different.pdf in Resources */,
 				84CACB102020310F008D8AB1 /* Assets.xcassets in Resources */,
 				38253BCB2058E3D500BBDF90 /* poor.pdf in Resources */,
 				229A24B42050CEA00059C5D3 /* avg.pdf in Resources */,
