@@ -9,7 +9,6 @@ import PDFKit
 
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var pdfView: PDFView!
-    let pdfFileName = "avg"
     var path: UIBezierPath!
     var currentAnnotation: PDFAnnotation!
 
@@ -39,7 +38,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBAction func openPDFAction(_ sender: Any) {
         pdfView = PDFView(frame: UIScreen.main.bounds)
         
-        if let url: URL = Bundle.main.url(forResource: pdfFileName, withExtension: "pdf") {
+        let pdfDocument1: PDFDocument = PDFDocument(url: Bundle.main.url(forResource: "avg", withExtension: "pdf")!)!
+        let pdfDocument2: PDFDocument = PDFDocument(url: Bundle.main.url(forResource: "good", withExtension: "pdf")!)!
+        let pdfDocument3: PDFDocument = PDFDocument(url: Bundle.main.url(forResource: "bad", withExtension: "pdf")!)!
+        
+        /*if let url: URL = Bundle.main.url(forResource: pdfFileName, withExtension: "pdf") {
             if let pdfDocument: PDFDocument = PDFDocument(url: url) {
                 pdfView.displayMode = .singlePage
                 pdfView.autoScales = true
@@ -47,6 +50,12 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 
                 view.addSubview(pdfView)
             }
+        }*/
+        
+        let combinedDocument = PDFDocument()
+        
+        for(pageNumber = 0; pageNumber < pdfDocument1.pageCount; pageNumber++) {
+            
         }
     }
     
