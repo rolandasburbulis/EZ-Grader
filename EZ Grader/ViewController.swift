@@ -11,8 +11,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var pdfView: PDFView!
     var path: UIBezierPath!
     var currentAnnotation: PDFAnnotation!
+    var numberOfPagesPerDoc: Int!
     var perPageCombined: PDFDocument!
     var perStudentCombined: PDFDocument!
+    var isPerPageMode: Bool = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,12 +23,13 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         let previousPageBtn = UIBarButtonItem(title: "<", style: .plain, target: self, action: #selector(previousPage))
         let nextPageBtn = UIBarButtonItem(title: ">", style: .plain, target: self, action: #selector(nextPage))
         let lastPageBtn = UIBarButtonItem(title: ">>", style: .plain, target: self, action: #selector(lastPage))
-        let annotationsBtn = UIBarButtonItem(title: "Annotations", style: .plain, target: self, action: #selector(annotations))
+        let annotationsBtn = UIBarButtonItem(title: "Annotate", style: .plain, target: self, action: #selector(annotations))
         let perPageBtn = UIBarButtonItem(title: "Per Page", style: .plain, target: self, action: #selector(viewPerPage))
         let perStudentBtn = UIBarButtonItem(title: "Per Student", style: .plain, target: self, action: #selector(viewPerStudent))
+        let saveBtn = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
         
         navigationItem.rightBarButtonItems = [lastPageBtn, nextPageBtn, previousPageBtn, firstPageBtn]
-        navigationItem.leftBarButtonItems = [annotationsBtn, perPageBtn, perStudentBtn]
+        navigationItem.leftBarButtonItems = [annotationsBtn, perPageBtn, perStudentBtn, saveBtn]
         
         /*let documentProvider = UIDocumentPickerViewController(documentTypes: ["public.image", "public.audio", "public.movie", "public.text", "public.item", "public.content", "public.source-code"], in: .import)
         documentProvider.delegate = self as? UIDocumentPickerDelegate
@@ -42,7 +45,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBAction func openPDFAction(_ sender: Any) {
         let pdfDocumentUrls: [URL] = Bundle.main.urls(forResourcesWithExtension: "pdf", subdirectory: nil)!
         
-        var numberOfPagesPerDoc: Int!
         var pdfDocument: PDFDocument!
         var mismatchedNumberOfPagesDetected: Bool = false
         
@@ -55,7 +57,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 mismatchedNumberOfPagesDetected = true
                 
                 // create the alert
-                let alert = UIAlertController(title: "Page Count Mismatch", message: "Expected document " + pdfDocumentUrl.lastPathComponent + " to have " + "\(numberOfPagesPerDoc!)" + " pages instead of " + "\(pdfDocument.pageCount)" + ".", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Page Count Mismatch", message: "All of the documents to be graded must have the same number of pages." + ".", preferredStyle: UIAlertControllerStyle.alert)
                 
                 // add the actions (buttons)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
@@ -99,7 +101,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             
             pdfView.displayMode = .singlePageContinuous
             pdfView.autoScales = true
-            pdfView.document = perStudentCombined
+            pdfView.document = perPageCombined
             
             view.addSubview(pdfView)
         }
@@ -131,17 +133,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         pdfView.goToLastPage(nil)
     }
     
-    @objc func numberOfPages() {
-        // create the alert
-        let alert = UIAlertController(title: "Number of pages in PDF", message: "\(pdfView.document!.pageCount)", preferredStyle: UIAlertControllerStyle.alert)
-        
-        // add the actions (buttons)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-        
-        // show the alert
-        self.present(alert, animated: true, completion: nil)
-    }
-    
     @objc func annotations() {
         if(pdfView.isUserInteractionEnabled) {
             path = UIBezierPath()
@@ -155,10 +146,62 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @objc func viewPerPage() {
         pdfView.document = perPageCombined
+        
+        isPerPageMode = true
     }
     
     @objc func viewPerStudent() {
         pdfView.document = perStudentCombined
+        
+        isPerPageMode = false
+    }
+    
+    @objc func save() {
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+    
+        if isPerPageMode {
+            
+        } else {
+            var pageIndex: Int = 0
+            var docToWriteOut: PDFDocument = PDFDocument()
+            
+            while pageIndex < perStudentCombined.pageCount {
+                docToWriteOut.insert(perStudentCombined.page(at: pageIndex)!.copy() as! PDFPage, at: docToWriteOut.pageCount)
+                
+                if pageIndex % (numberOfPagesPerDoc - 1) == 0 {
+                    docToWriteOut.write(toFile: "\(documentsPath)/output.pdf")
+                }
+            }
+            
+            perPageCombined = PDFDocument()
+            
+            for pdfDocumentUrl: URL in pdfDocumentUrls {
+                pdfDocument = PDFDocument(url: pdfDocumentUrl)
+                
+                var pageIndex: Int = 0
+                
+                while pageIndex < pdfDocument.pageCount {
+                    perStudentCombined.insert(pdfDocument.page(at: pageIndex)!.copy() as! PDFPage, at: perStudentCombined.pageCount)
+                    
+                    pageIndex += 1
+                }
+            }
+            
+            var pageIndex: Int = 0
+            
+            while pageIndex < numberOfPagesPerDoc {
+                for pdfDocumentUrl: URL in pdfDocumentUrls {
+                    let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentUrl)!.page(at: pageIndex))!.copy() as! PDFPage
+                    
+                    perPageCombined.insert(pdfPage, at: perPageCombined.pageCount)
+                }
+                
+                pageIndex += 1
+            }
+            
+        }
+        
+        pdfView.document?.write(toFile: "\(documentsPath)/output.pdf")
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
