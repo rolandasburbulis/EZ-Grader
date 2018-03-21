@@ -202,13 +202,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             
             path.addLine(to: touchPageCoordinate)
             
-            let rect: CGRect = path.bounds
-            
             if( currentAnnotation != nil ) {
                 pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.removeAnnotation(currentAnnotation)
             }
                 
-            currentAnnotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
+            currentAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: .ink, withProperties: nil)
             currentAnnotation.backgroundColor = .blue
             currentAnnotation.color = .black
             currentAnnotation.add(path)
@@ -224,6 +222,17 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             let pdfPageIndexAtTouchedPosition: Int = (pdfView.document?.index(for: pdfPageAtTouchedPosition))!
             
             print(pdfView.document!.page(at: pdfPageIndexAtTouchedPosition)!.annotations.count)
+            
+            //let bounds = pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox)
+            
+            /*let textFieldNameBox = CGRect(origin: CGPoint(x: 169, y: bounds.height - 102), size: CGSize(width: 371, height: 23))
+
+            let textFieldName = PDFAnnotation(bounds: textFieldNameBox, forType: .widget, withProperties: nil)
+            
+            textFieldName.widgetFieldType = .button
+            textFieldName.backgroundColor = UIColor.blue
+            
+            pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(textFieldName);*/
         }
     }
 }
