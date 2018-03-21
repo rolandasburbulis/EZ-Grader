@@ -158,50 +158,29 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @objc func save() {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        var docToWriteOut: PDFDocument = PDFDocument()
     
         if isPerPageMode {
+            let numberOfDocuments: Int = perPageCombined.pageCount / numberOfPagesPerDoc
             
+            for documentNumber: Int in 0...numberOfDocuments - 1 {
+                for pageNumber: Int in 0...numberOfPagesPerDoc - 1 {
+                    docToWriteOut.insert(perPageCombined.page(at: (pageNumber * numberOfDocuments + documentNumber))!.copy() as! PDFPage, at: docToWriteOut.pageCount)
+                }
+                
+                docToWriteOut.write(toFile: "\(documentsPath)/output\(documentNumber + 1).pdf")
+                docToWriteOut = PDFDocument()
+            }
         } else {
-            var pageIndex: Int = 0
-            var docToWriteOut: PDFDocument = PDFDocument()
-            
-            while pageIndex < perStudentCombined.pageCount {
-                docToWriteOut.insert(perStudentCombined.page(at: pageIndex)!.copy() as! PDFPage, at: docToWriteOut.pageCount)
+            for pageIndex: Int in 1...perStudentCombined.pageCount {
+                docToWriteOut.insert(perStudentCombined.page(at: pageIndex - 1)!.copy() as! PDFPage, at: docToWriteOut.pageCount)
                 
-                if pageIndex % (numberOfPagesPerDoc - 1) == 0 {
-                    docToWriteOut.write(toFile: "\(documentsPath)/output.pdf")
+                if pageIndex % numberOfPagesPerDoc == 0 {
+                    docToWriteOut.write(toFile: "\(documentsPath)/output\(pageIndex / numberOfPagesPerDoc).pdf")
+                    docToWriteOut = PDFDocument()
                 }
             }
-            
-            perPageCombined = PDFDocument()
-            
-            for pdfDocumentUrl: URL in pdfDocumentUrls {
-                pdfDocument = PDFDocument(url: pdfDocumentUrl)
-                
-                var pageIndex: Int = 0
-                
-                while pageIndex < pdfDocument.pageCount {
-                    perStudentCombined.insert(pdfDocument.page(at: pageIndex)!.copy() as! PDFPage, at: perStudentCombined.pageCount)
-                    
-                    pageIndex += 1
-                }
-            }
-            
-            var pageIndex: Int = 0
-            
-            while pageIndex < numberOfPagesPerDoc {
-                for pdfDocumentUrl: URL in pdfDocumentUrls {
-                    let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentUrl)!.page(at: pageIndex))!.copy() as! PDFPage
-                    
-                    perPageCombined.insert(pdfPage, at: perPageCombined.pageCount)
-                }
-                
-                pageIndex += 1
-            }
-            
         }
-        
-        pdfView.document?.write(toFile: "\(documentsPath)/output.pdf")
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
