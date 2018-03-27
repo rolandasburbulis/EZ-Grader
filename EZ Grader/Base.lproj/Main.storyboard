@@ -18,9 +18,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ad-w9-bkh">
-                                <rect key="frame" x="159" y="307" width="70" height="30"/>
-                                <state key="normal" title="Open PDF"/>
+                            <button opaque="NO" contentMode="center" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ad-w9-bkh">
+                                <rect key="frame" x="87" y="300" width="201" height="34"/>
+                                <state key="normal" title="Select Assignment Folder">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
                                 <connections>
                                     <action selector="openPDFAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ViI-kS-zcO"/>
                                 </connections>

@@ -19,18 +19,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let firstPageBtn = UIBarButtonItem(title: "<<", style: .plain, target: self, action: #selector(firstPage))
-        let previousPageBtn = UIBarButtonItem(title: "<", style: .plain, target: self, action: #selector(previousPage))
-        let nextPageBtn = UIBarButtonItem(title: ">", style: .plain, target: self, action: #selector(nextPage))
-        let lastPageBtn = UIBarButtonItem(title: ">>", style: .plain, target: self, action: #selector(lastPage))
-        let annotationsBtn = UIBarButtonItem(title: "Annotate", style: .plain, target: self, action: #selector(annotations))
-        let perPageBtn = UIBarButtonItem(title: "Per Page", style: .plain, target: self, action: #selector(viewPerPage))
-        let perStudentBtn = UIBarButtonItem(title: "Per Student", style: .plain, target: self, action: #selector(viewPerStudent))
-        let saveBtn = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
-        
-        navigationItem.rightBarButtonItems = [lastPageBtn, nextPageBtn, previousPageBtn, firstPageBtn]
-        navigationItem.leftBarButtonItems = [annotationsBtn, perPageBtn, perStudentBtn, saveBtn]
-        
         /*let documentProvider = UIDocumentPickerViewController(documentTypes: ["public.image", "public.audio", "public.movie", "public.text", "public.item", "public.content", "public.source-code"], in: .import)
         documentProvider.delegate = self as? UIDocumentPickerDelegate
         
@@ -39,14 +27,12 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     @IBAction func openPDFAction(_ sender: Any) {
         let pdfDocumentUrls: [URL] = Bundle.main.urls(forResourcesWithExtension: "pdf", subdirectory: nil)!
         
         var pdfDocument: PDFDocument!
-        var mismatchedNumberOfPagesDetected: Bool = false
         
         for pdfDocumentUrl: URL in pdfDocumentUrls {
             pdfDocument = PDFDocument(url: pdfDocumentUrl)
@@ -54,10 +40,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             if numberOfPagesPerDoc == nil {
                 numberOfPagesPerDoc = pdfDocument.pageCount
             } else if numberOfPagesPerDoc != pdfDocument.pageCount {
-                mismatchedNumberOfPagesDetected = true
-                
                 // create the alert
-                let alert = UIAlertController(title: "Page Count Mismatch", message: "All of the documents to be graded must have the same number of pages." + ".", preferredStyle: UIAlertControllerStyle.alert)
+                let alert = UIAlertController(title: "Page Count Mismatch", message: "All of the documents to be graded must have the same number of pages.", preferredStyle: UIAlertControllerStyle.alert)
                 
                 // add the actions (buttons)
                 alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
@@ -65,78 +49,51 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 // show the alert
                 self.present(alert, animated: true, completion: nil)
                 
-                break
+                return
             }
         }
         
-        if !mismatchedNumberOfPagesDetected {
-            perStudentCombined = PDFDocument()
-            perPageCombined = PDFDocument()
+        (sender as? UIButton)?.isHidden = true
+        
+        perStudentCombined = PDFDocument()
+        perPageCombined = PDFDocument()
+        
+        for pdfDocumentUrl: URL in pdfDocumentUrls {
+            pdfDocument = PDFDocument(url: pdfDocumentUrl)
             
+            for pageIndex: Int in 0...pdfDocument.pageCount - 1 {
+                perStudentCombined.insert(pdfDocument.page(at: pageIndex)!.copy() as! PDFPage, at: perStudentCombined.pageCount)
+            }
+        }
+        
+        for pageIndex: Int in 0...numberOfPagesPerDoc - 1 {
             for pdfDocumentUrl: URL in pdfDocumentUrls {
-                pdfDocument = PDFDocument(url: pdfDocumentUrl)
+                let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentUrl)!.page(at: pageIndex))!.copy() as! PDFPage
                 
-                var pageIndex: Int = 0
-                
-                while pageIndex < pdfDocument.pageCount {
-                    perStudentCombined.insert(pdfDocument.page(at: pageIndex)!.copy() as! PDFPage, at: perStudentCombined.pageCount)
-                    
-                    pageIndex += 1
-                }
+                perPageCombined.insert(pdfPage, at: perPageCombined.pageCount)
             }
-            
-            var pageIndex: Int = 0
-            
-            while pageIndex < numberOfPagesPerDoc {
-                for pdfDocumentUrl: URL in pdfDocumentUrls {
-                    let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentUrl)!.page(at: pageIndex))!.copy() as! PDFPage
-                    
-                    perPageCombined.insert(pdfPage, at: perPageCombined.pageCount)
-                }
-                
-                pageIndex += 1
-            }
-            
-            pdfView = PDFView(frame: UIScreen.main.bounds)
-            
-            pdfView.displayMode = .singlePageContinuous
-            pdfView.autoScales = true
-            pdfView.document = perPageCombined
-            
-            view.addSubview(pdfView)
         }
         
-        /*if let url: URL = Bundle.main.url(forResource: pdfFileName, withExtension: "pdf") {
-            if let pdfDocument: PDFDocument = PDFDocument(url: url) {
-                pdfView.displayMode = .singlePage
-                pdfView.autoScales = true
-                pdfView.document = pdfDocument
-                
-                view.addSubview(pdfView)
-            }
-        }*/
-    }
-    
-    @objc func firstPage() {
-        pdfView.goToFirstPage(nil)
-    }
-    
-    @objc func previousPage() {
-        pdfView.goToPreviousPage(nil)
-    }
-    
-    @objc func nextPage() {
-        pdfView.goToNextPage(nil)
-    }
-    
-    @objc func lastPage() {
-        pdfView.goToLastPage(nil)
+        pdfView = PDFView(frame: UIScreen.main.bounds)
+        
+        pdfView.displayMode = .singlePageContinuous
+        pdfView.autoScales = true
+        pdfView.document = perPageCombined
+        
+        view.addSubview(pdfView)
+        
+        let annotationsBtn = UIBarButtonItem(title: "Annotate", style: .plain, target: self, action: #selector(annotations))
+        let perPageBtn = UIBarButtonItem(title: "Per Page", style: .plain, target: self, action: #selector(viewPerPage))
+        let perStudentBtn = UIBarButtonItem(title: "Per Student", style: .plain, target: self, action: #selector(viewPerStudent))
+        let saveBtn = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
+        
+        navigationItem.leftBarButtonItems = [annotationsBtn, perPageBtn, perStudentBtn, saveBtn]
     }
     
     @objc func annotations() {
         if(pdfView.isUserInteractionEnabled) {
             path = UIBezierPath()
-            path.lineWidth = 3
+            path.lineWidth = 7
         } else {
             currentAnnotation = nil
         }
@@ -207,8 +164,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             }
                 
             currentAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: .ink, withProperties: nil)
-            currentAnnotation.backgroundColor = .blue
-            currentAnnotation.color = .black
+            currentAnnotation.color = .red
             currentAnnotation.add(path)
             
             pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(currentAnnotation)
@@ -220,19 +176,38 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
             let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
             let pdfPageIndexAtTouchedPosition: Int = (pdfView.document?.index(for: pdfPageAtTouchedPosition))!
+            let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
             
-            print(pdfView.document!.page(at: pdfPageIndexAtTouchedPosition)!.annotations.count)
-            
-            //let bounds = pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox)
-            
-            /*let textFieldNameBox = CGRect(origin: CGPoint(x: 169, y: bounds.height - 102), size: CGSize(width: 371, height: 23))
+            let numeratorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y + 20), size: CGSize(width: 30, height: 50))
+            let fractionSymbolBox = CGRect(origin: touchPageCoordinate, size: CGSize(width: 30, height: 20))
+            let denominatorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y - 50), size: CGSize(width: 30, height: 50))
 
-            let textFieldName = PDFAnnotation(bounds: textFieldNameBox, forType: .widget, withProperties: nil)
+            let numeratorFreeTextField: PDFAnnotation = PDFAnnotation(bounds: numeratorBox, forType: .freeText, withProperties: nil)
             
-            textFieldName.widgetFieldType = .button
-            textFieldName.backgroundColor = UIColor.blue
+            var font: UIFont = UIFont(descriptor: UIFontDescriptor(), size: 25)
             
-            pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(textFieldName);*/
+            numeratorFreeTextField.color = UIColor.yellow
+            numeratorFreeTextField.font = font
+            numeratorFreeTextField.isReadOnly = false
+            numeratorFreeTextField.contents = "2"
+            
+            let fractionSymbolFreeTextField: PDFAnnotation = PDFAnnotation(bounds: fractionSymbolBox, forType: .freeText, withProperties: nil)
+            
+            fractionSymbolFreeTextField.color = UIColor.lightGray
+            //fractionSymbolFreeTextField.font = UIFont(descriptor: UIFontDescriptor(), size: 25)
+            fractionSymbolFreeTextField.isReadOnly = true
+            fractionSymbolFreeTextField.contents = "/"
+            
+            let denominatorSymbolFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: denominatorBox, forType: .freeText, withProperties: nil)
+            
+            denominatorSymbolFreeTextAnnotation.color = UIColor.yellow
+            //denominatorSymbolFreeTextAnnotation.font = UIFont(descriptor: UIFontDescriptor(), size: 25)
+            denominatorSymbolFreeTextAnnotation.isReadOnly = false
+            denominatorSymbolFreeTextAnnotation.contents = "4"
+            
+            pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(numeratorFreeTextField);
+            pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(fractionSymbolFreeTextField);
+            pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(denominatorSymbolFreeTextAnnotation);
         }
     }
 }
