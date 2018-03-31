@@ -200,31 +200,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                     let path = UIBezierPath(ovalIn: pathRect)
                     annotation.add(path)*/
                 } else {
-                    let numeratorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y + 20), size: CGSize(width: 30, height: 50))
-                    let fractionSymbolBox = CGRect(origin: touchPageCoordinate, size: CGSize(width: 30, height: 20))
-                    let denominatorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y - 50), size: CGSize(width: 30, height: 50))
-                    
-                    let numeratorFreeTextField: PDFAnnotation = PDFAnnotation(bounds: numeratorBox, forType: .freeText, withProperties: nil)
-                    
-                    numeratorFreeTextField.color = UIColor.yellow
-                    numeratorFreeTextField.isReadOnly = false
-                    numeratorFreeTextField.contents = "2"
-                    
-                    let fractionSymbolFreeTextField: PDFAnnotation = PDFAnnotation(bounds: fractionSymbolBox, forType: .freeText, withProperties: nil)
-                    
-                    fractionSymbolFreeTextField.color = UIColor.lightGray
-                    fractionSymbolFreeTextField.isReadOnly = true
-                    fractionSymbolFreeTextField.contents = "/"
-                    
-                    let denominatorSymbolFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: denominatorBox, forType: .freeText, withProperties: nil)
-                    
-                    denominatorSymbolFreeTextAnnotation.color = UIColor.yellow
-                    denominatorSymbolFreeTextAnnotation.isReadOnly = false
-                    denominatorSymbolFreeTextAnnotation.contents = "4"
-                    
-                    self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(numeratorFreeTextField);
-                    self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(fractionSymbolFreeTextField);
-                    self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(denominatorSymbolFreeTextAnnotation);
+                    self.showInputDialog(touchPageCoordinate: touchPageCoordinate, pdfPageIndexAtTouchedPosition: pdfPageIndexAtTouchedPosition)
                 }
             }
         }
@@ -251,6 +227,53 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(self.currentAnnotation)
             }
         }
+    }
+    
+    private func showInputDialog(touchPageCoordinate: CGPoint, pdfPageIndexAtTouchedPosition: Int) -> Void {
+        let alertController = UIAlertController(title: "Enter Grade", message: "", preferredStyle: .alert)
+        
+        let addGradeAction: UIAlertAction = UIAlertAction(title: "Add Grade", style: .default) { (alert: UIAlertAction!) in
+            let numeratorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y + 20), size: CGSize(width: 30, height: 50))
+            let fractionSymbolBox = CGRect(origin: touchPageCoordinate, size: CGSize(width: 30, height: 20))
+            let denominatorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y - 50), size: CGSize(width: 30, height: 50))
+            
+            let numeratorFreeTextField: PDFAnnotation = PDFAnnotation(bounds: numeratorBox, forType: .freeText, withProperties: nil)
+            
+            numeratorFreeTextField.color = UIColor.yellow
+            numeratorFreeTextField.isReadOnly = false
+            numeratorFreeTextField.contents = alertController.textFields?[0].text
+            
+            let fractionSymbolFreeTextField: PDFAnnotation = PDFAnnotation(bounds: fractionSymbolBox, forType: .freeText, withProperties: nil)
+            
+            fractionSymbolFreeTextField.color = UIColor.lightGray
+            fractionSymbolFreeTextField.isReadOnly = true
+            fractionSymbolFreeTextField.contents = "/"
+            
+            let denominatorSymbolFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: denominatorBox, forType: .freeText, withProperties: nil)
+            
+            denominatorSymbolFreeTextAnnotation.color = UIColor.yellow
+            denominatorSymbolFreeTextAnnotation.isReadOnly = false
+            denominatorSymbolFreeTextAnnotation.contents = alertController.textFields?[1].text
+            
+            self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(numeratorFreeTextField)
+            self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(fractionSymbolFreeTextField)
+            self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(denominatorSymbolFreeTextAnnotation)
+        }
+        
+        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { (alert: UIAlertAction!) in }
+        
+        alertController.addTextField { (textField) in
+            textField.placeholder = "Points Earned"
+        }
+        
+        alertController.addTextField { (textField) in
+            textField.placeholder = "Maximum Points"
+        }
+        
+        alertController.addAction(addGradeAction)
+        alertController.addAction(cancelAction)
+        
+        self.present(alertController, animated: true, completion: nil)
     }
     
     private func updateNavigationBar() -> Void {
