@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,29 +14,72 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="EZ_Grader" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="EZ_Grader" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="center" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ad-w9-bkh">
-                                <rect key="frame" x="87" y="300" width="201" height="34"/>
-                                <state key="normal" title="Select Assignment Folder">
-                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
-                                </state>
+                            <button opaque="NO" contentMode="center" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ad-w9-bkh">
+                                <rect key="frame" x="75.5" y="306" width="224" height="55"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
+                                <state key="normal" title="Start Grading"/>
                                 <connections>
-                                    <action selector="openPDFAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ViI-kS-zcO"/>
+                                    <action selector="startGrading:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kCO-Mf-GTf"/>
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="1" green="0.90791689686572641" blue="0.79443482221705508" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="1ad-w9-bkh" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="286" id="2K6-td-GwR"/>
-                            <constraint firstItem="1ad-w9-bkh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="146" id="rNs-0M-2ye"/>
+                            <constraint firstItem="1ad-w9-bkh" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Bec-eY-2gF"/>
+                            <constraint firstItem="1ad-w9-bkh" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="QRr-XF-oo8"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" id="aur-6e-mcZ"/>
+                    <navigationItem key="navigationItem" id="aur-6e-mcZ">
+                        <leftBarButtonItems>
+                            <barButtonItem image="AnnotateIcon" landscapeImage="AnnotateIcon" largeContentSizeImage="AnnotateIcon" id="CIn-ey-iix">
+                                <connections>
+                                    <action selector="annotate:" destination="BYZ-38-t0r" id="PU9-DH-euK"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="AddGradeIcon" landscapeImage="AddGradeIcon" largeContentSizeImage="AddGradeIcon" id="5Cc-lE-lfz">
+                                <connections>
+                                    <action selector="addGrade:" destination="BYZ-38-t0r" id="EuH-H3-idF"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="SaveIcon" landscapeImage="SaveIcon" largeContentSizeImage="SaveIcon" id="hTB-bM-eeP">
+                                <connections>
+                                    <action selector="save:" destination="BYZ-38-t0r" id="zsj-0a-fIT"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem systemItem="done" id="yI8-Ry-rqu">
+                                <connections>
+                                    <action selector="doneEditing:" destination="BYZ-38-t0r" id="Z8z-EH-808"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
+                        <rightBarButtonItems>
+                            <barButtonItem title="Per Student" id="e5D-s3-XB0">
+                                <connections>
+                                    <action selector="viewPerStudent:" destination="BYZ-38-t0r" id="xTT-Bl-j38"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Per Page" id="w5k-IZ-lEB">
+                                <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <action selector="viewPerPage:" destination="BYZ-38-t0r" id="YPF-hf-OEP"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="addGradeButton" destination="5Cc-lE-lfz" id="Qhr-nj-0kC"/>
+                        <outlet property="annotateButton" destination="CIn-ey-iix" id="MR2-iy-f5F"/>
+                        <outlet property="doneButton" destination="yI8-Ry-rqu" id="Byp-8e-Hlp"/>
+                        <outlet property="saveButton" destination="hTB-bM-eeP" id="UEO-0p-5p5"/>
+                        <outlet property="viewPerPageButton" destination="w5k-IZ-lEB" id="X8b-67-2RJ"/>
+                        <outlet property="viewPerStudentButton" destination="e5D-s3-XB0" id="iSl-qI-aYO"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
@@ -60,4 +104,9 @@
             <point key="canvasLocation" x="-347.19999999999999" y="-41.379310344827587"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="AddGradeIcon" width="16" height="16"/>
+        <image name="AnnotateIcon" width="16" height="16"/>
+        <image name="SaveIcon" width="16" height="16"/>
+    </resources>
 </document>

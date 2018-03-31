@@ -7,7 +7,14 @@
 
 import PDFKit
 
+enum EZGraderMode {
+    case viewPDF
+    case annotate
+    case addGrade
+}
+
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
+    var ezGraderMode: EZGraderMode?
     var pdfView: PDFView!
     var path: UIBezierPath!
     var currentAnnotation: PDFAnnotation!
@@ -16,20 +23,85 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var perStudentCombined: PDFDocument!
     var isPerPageMode: Bool = true
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        /*let documentProvider = UIDocumentPickerViewController(documentTypes: ["public.image", "public.audio", "public.movie", "public.text", "public.item", "public.content", "public.source-code"], in: .import)
-        documentProvider.delegate = self as? UIDocumentPickerDelegate
-        
-        self.present(documentProvider, animated: true, completion: nil)*/
-    }
+    //MARK: Properties
+    @IBOutlet var annotateButton: UIBarButtonItem!
+    @IBOutlet var addGradeButton: UIBarButtonItem!
+    @IBOutlet var saveButton: UIBarButtonItem!
+    @IBOutlet var doneButton: UIBarButtonItem!
+    @IBOutlet var viewPerPageButton: UIBarButtonItem!
+    @IBOutlet var viewPerStudentButton: UIBarButtonItem!
+    
+    //MARK: Actions
+    @IBAction func annotate(_ sender: UIBarButtonItem) {
+        self.path = UIBezierPath()
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+        self.pdfView.isUserInteractionEnabled = false
+        
+        self.ezGraderMode = EZGraderMode.annotate
+        
+        self.updateNavigationBar()
     }
     
-    @IBAction func openPDFAction(_ sender: Any) {
+    @IBAction func addGrade(_ sender: UIBarButtonItem) {
+        self.pdfView.isUserInteractionEnabled = false
+        
+        self.ezGraderMode = EZGraderMode.addGrade
+        
+        self.updateNavigationBar()
+    }
+    
+    @IBAction func save(_ sender: UIBarButtonItem) {
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        var docToWriteOut: PDFDocument = PDFDocument()
+        
+        if self.isPerPageMode {
+            let numberOfDocuments: Int = self.perPageCombined.pageCount / self.numberOfPagesPerDoc
+            
+            for documentNumber: Int in 0...numberOfDocuments - 1 {
+                for pageNumber: Int in 0...self.numberOfPagesPerDoc - 1 {
+                    docToWriteOut.insert(self.perPageCombined.page(at: (pageNumber * numberOfDocuments + documentNumber))!.copy() as! PDFPage, at: docToWriteOut.pageCount)
+                }
+                
+                docToWriteOut.write(toFile: "\(documentsPath)/output\(documentNumber + 1).pdf")
+                docToWriteOut = PDFDocument()
+            }
+        } else {
+            for pageIndex: Int in 1...self.perStudentCombined.pageCount {
+                docToWriteOut.insert(self.perStudentCombined.page(at: pageIndex - 1)!.copy() as! PDFPage, at: docToWriteOut.pageCount)
+                
+                if pageIndex % self.numberOfPagesPerDoc == 0 {
+                    docToWriteOut.write(toFile: "\(documentsPath)/output\(pageIndex / self.numberOfPagesPerDoc).pdf")
+                    docToWriteOut = PDFDocument()
+                }
+            }
+        }
+    }
+    
+    @IBAction func doneEditing(_ sender: UIBarButtonItem) {
+        if self.ezGraderMode == EZGraderMode.annotate {
+            self.currentAnnotation = nil
+        }
+        
+        self.pdfView.isUserInteractionEnabled = true
+        
+        self.ezGraderMode = EZGraderMode.viewPDF
+        
+        self.updateNavigationBar()
+    }
+    
+    @IBAction func viewPerPage(_ sender: UIBarButtonItem) {
+        self.pdfView.document = self.perPageCombined
+        
+        self.isPerPageMode = true
+    }
+    
+    @IBAction func viewPerStudent(_ sender: UIBarButtonItem) {
+        self.pdfView.document = self.perStudentCombined
+        
+        self.isPerPageMode = false
+    }
+    
+    @IBAction func startGrading(_ sender: UIButton) {
         let pdfDocumentUrls: [URL] = Bundle.main.urls(forResourcesWithExtension: "pdf", subdirectory: nil)!
         
         var pdfDocument: PDFDocument!
@@ -37,9 +109,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         for pdfDocumentUrl: URL in pdfDocumentUrls {
             pdfDocument = PDFDocument(url: pdfDocumentUrl)
             
-            if numberOfPagesPerDoc == nil {
-                numberOfPagesPerDoc = pdfDocument.pageCount
-            } else if numberOfPagesPerDoc != pdfDocument.pageCount {
+            if self.numberOfPagesPerDoc == nil {
+                self.numberOfPagesPerDoc = pdfDocument.pageCount
+            } else if self.numberOfPagesPerDoc != pdfDocument.pageCount {
                 // create the alert
                 let alert = UIAlertController(title: "Page Count Mismatch", message: "All of the documents to be graded must have the same number of pages.", preferredStyle: UIAlertControllerStyle.alert)
                 
@@ -53,161 +125,149 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
         
-        (sender as? UIButton)?.isHidden = true
+        sender.isHidden = true
         
-        perStudentCombined = PDFDocument()
-        perPageCombined = PDFDocument()
+        self.perStudentCombined = PDFDocument()
+        self.perPageCombined = PDFDocument()
         
         for pdfDocumentUrl: URL in pdfDocumentUrls {
             pdfDocument = PDFDocument(url: pdfDocumentUrl)
             
             for pageIndex: Int in 0...pdfDocument.pageCount - 1 {
-                perStudentCombined.insert(pdfDocument.page(at: pageIndex)!.copy() as! PDFPage, at: perStudentCombined.pageCount)
+                self.perStudentCombined.insert(pdfDocument.page(at: pageIndex)!.copy() as! PDFPage, at: self.perStudentCombined.pageCount)
             }
         }
         
-        for pageIndex: Int in 0...numberOfPagesPerDoc - 1 {
+        for pageIndex: Int in 0...self.numberOfPagesPerDoc - 1 {
             for pdfDocumentUrl: URL in pdfDocumentUrls {
                 let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentUrl)!.page(at: pageIndex))!.copy() as! PDFPage
                 
-                perPageCombined.insert(pdfPage, at: perPageCombined.pageCount)
+                self.perPageCombined.insert(pdfPage, at: self.perPageCombined.pageCount)
             }
         }
         
-        pdfView = PDFView(frame: UIScreen.main.bounds)
+        self.pdfView = PDFView(frame: UIScreen.main.bounds)
         
-        pdfView.displayMode = .singlePageContinuous
-        pdfView.autoScales = true
-        pdfView.document = perPageCombined
+        self.pdfView.displayMode = .singlePageContinuous
+        self.pdfView.autoScales = true
+        self.pdfView.document = self.perPageCombined
         
-        view.addSubview(pdfView)
+        self.view.addSubview(self.pdfView)
         
-        let annotationsBtn = UIBarButtonItem(title: "Annotate", style: .plain, target: self, action: #selector(annotations))
-        let perPageBtn = UIBarButtonItem(title: "Per Page", style: .plain, target: self, action: #selector(viewPerPage))
-        let perStudentBtn = UIBarButtonItem(title: "Per Student", style: .plain, target: self, action: #selector(viewPerStudent))
-        let saveBtn = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
+        self.ezGraderMode = EZGraderMode.viewPDF
         
-        navigationItem.leftBarButtonItems = [annotationsBtn, perPageBtn, perStudentBtn, saveBtn]
+        self.navigationController?.isNavigationBarHidden = false
+        
+        self.updateNavigationBar()
     }
     
-    @objc func annotations() {
-        if(pdfView.isUserInteractionEnabled) {
-            path = UIBezierPath()
-            path.lineWidth = 7
-        } else {
-            currentAnnotation = nil
-        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.navigationController?.isNavigationBarHidden = true
+    }
 
-        pdfView.isUserInteractionEnabled = !pdfView.isUserInteractionEnabled
-    }
-    
-    @objc func viewPerPage() {
-        pdfView.document = perPageCombined
-        
-        isPerPageMode = true
-    }
-    
-    @objc func viewPerStudent() {
-        pdfView.document = perStudentCombined
-        
-        isPerPageMode = false
-    }
-    
-    @objc func save() {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        var docToWriteOut: PDFDocument = PDFDocument()
-    
-        if isPerPageMode {
-            let numberOfDocuments: Int = perPageCombined.pageCount / numberOfPagesPerDoc
-            
-            for documentNumber: Int in 0...numberOfDocuments - 1 {
-                for pageNumber: Int in 0...numberOfPagesPerDoc - 1 {
-                    docToWriteOut.insert(perPageCombined.page(at: (pageNumber * numberOfDocuments + documentNumber))!.copy() as! PDFPage, at: docToWriteOut.pageCount)
-                }
-                
-                docToWriteOut.write(toFile: "\(documentsPath)/output\(documentNumber + 1).pdf")
-                docToWriteOut = PDFDocument()
-            }
-        } else {
-            for pageIndex: Int in 1...perStudentCombined.pageCount {
-                docToWriteOut.insert(perStudentCombined.page(at: pageIndex - 1)!.copy() as! PDFPage, at: docToWriteOut.pageCount)
-                
-                if pageIndex % numberOfPagesPerDoc == 0 {
-                    docToWriteOut.write(toFile: "\(documentsPath)/output\(pageIndex / numberOfPagesPerDoc).pdf")
-                    docToWriteOut = PDFDocument()
-                }
-            }
-        }
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
-            let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
-            let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
-            
-            path.move(to: touchPageCoordinate)
+        if self.ezGraderMode != EZGraderMode.viewPDF {
+            if let touch = touches.first {
+                let touchViewCoordinate: CGPoint = touch.location(in: self.pdfView)
+                let pdfPageAtTouchedPosition: PDFPage = self.pdfView.page(for: touchViewCoordinate, nearest: true)!
+                let pdfPageIndexAtTouchedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTouchedPosition))!
+                let touchPageCoordinate: CGPoint = self.pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
+                
+                if self.ezGraderMode == EZGraderMode.annotate {
+                    self.path.move(to: touchPageCoordinate)
+                    
+                    /*let pathRect = CGRect(x: touchPageCoordinate.x, y: touchPageCoordinate.y, width: 1, height: 1)
+                    let tempPath = UIBezierPath(ovalIn: pathRect)
+                    
+                    self.currentAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: .ink, withProperties: nil)
+                    self.currentAnnotation.color = .red
+                    self.currentAnnotation.add(tempPath)
+                    
+                    self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(self.currentAnnotation)
+                    
+                    let rect = CGRect(x: 100.0, y: 100.0, width: 100.0, height: 100.0)
+                    
+                    let annotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
+                    annotation.backgroundColor = .blue
+                    
+                    let pathRect = CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0)
+                    let path = UIBezierPath(ovalIn: pathRect)
+                    annotation.add(path)*/
+                } else {
+                    let numeratorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y + 20), size: CGSize(width: 30, height: 50))
+                    let fractionSymbolBox = CGRect(origin: touchPageCoordinate, size: CGSize(width: 30, height: 20))
+                    let denominatorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y - 50), size: CGSize(width: 30, height: 50))
+                    
+                    let numeratorFreeTextField: PDFAnnotation = PDFAnnotation(bounds: numeratorBox, forType: .freeText, withProperties: nil)
+                    
+                    numeratorFreeTextField.color = UIColor.yellow
+                    numeratorFreeTextField.isReadOnly = false
+                    numeratorFreeTextField.contents = "2"
+                    
+                    let fractionSymbolFreeTextField: PDFAnnotation = PDFAnnotation(bounds: fractionSymbolBox, forType: .freeText, withProperties: nil)
+                    
+                    fractionSymbolFreeTextField.color = UIColor.lightGray
+                    fractionSymbolFreeTextField.isReadOnly = true
+                    fractionSymbolFreeTextField.contents = "/"
+                    
+                    let denominatorSymbolFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: denominatorBox, forType: .freeText, withProperties: nil)
+                    
+                    denominatorSymbolFreeTextAnnotation.color = UIColor.yellow
+                    denominatorSymbolFreeTextAnnotation.isReadOnly = false
+                    denominatorSymbolFreeTextAnnotation.contents = "4"
+                    
+                    self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(numeratorFreeTextField);
+                    self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(fractionSymbolFreeTextField);
+                    self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(denominatorSymbolFreeTextAnnotation);
+                }
+            }
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
-            let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
-            let pdfPageIndexAtTouchedPosition: Int = (pdfView.document?.index(for: pdfPageAtTouchedPosition))!
-            let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
-            
-            path.addLine(to: touchPageCoordinate)
-            
-            if( currentAnnotation != nil ) {
-                pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.removeAnnotation(currentAnnotation)
-            }
+        if self.ezGraderMode == EZGraderMode.annotate {
+            if let touch = touches.first {
+                let touchViewCoordinate: CGPoint = touch.location(in: self.pdfView)
+                let pdfPageAtTouchedPosition: PDFPage = self.pdfView.page(for: touchViewCoordinate, nearest: true)!
+                let pdfPageIndexAtTouchedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTouchedPosition))!
+                let touchPageCoordinate: CGPoint = self.pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
                 
-            currentAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: .ink, withProperties: nil)
-            currentAnnotation.color = .red
-            currentAnnotation.add(path)
-            
-            pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(currentAnnotation)
+                self.path.addLine(to: touchPageCoordinate)
+                
+                if self.currentAnnotation != nil {
+                    self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.removeAnnotation(self.currentAnnotation)
+                }
+                
+                self.currentAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: .ink, withProperties: nil)
+                self.currentAnnotation.color = .red
+                self.currentAnnotation.add(self.path)
+                
+                self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(self.currentAnnotation)
+            }
         }
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first {
-            let touchViewCoordinate: CGPoint = touch.location(in: pdfView)
-            let pdfPageAtTouchedPosition: PDFPage = pdfView.page(for: touchViewCoordinate, nearest: true)!
-            let pdfPageIndexAtTouchedPosition: Int = (pdfView.document?.index(for: pdfPageAtTouchedPosition))!
-            let touchPageCoordinate: CGPoint = pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
+    private func updateNavigationBar() -> Void {
+        switch self.ezGraderMode {
+        case .viewPDF?:
+            self.navigationItem.leftBarButtonItems = [self.annotateButton, self.addGradeButton, self.saveButton]
+            self.navigationItem.rightBarButtonItems = [self.viewPerPageButton, self.viewPerStudentButton]
+        case .annotate?,
+             .addGrade?:
+            let currentDoneButtonTintColor: UIColor! = self.doneButton.tintColor
+            self.doneButton.tintColor = .clear
+            self.doneButton.tintColor = currentDoneButtonTintColor
             
-            let numeratorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y + 20), size: CGSize(width: 30, height: 50))
-            let fractionSymbolBox = CGRect(origin: touchPageCoordinate, size: CGSize(width: 30, height: 20))
-            let denominatorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y - 50), size: CGSize(width: 30, height: 50))
-
-            let numeratorFreeTextField: PDFAnnotation = PDFAnnotation(bounds: numeratorBox, forType: .freeText, withProperties: nil)
-            
-            var font: UIFont = UIFont(descriptor: UIFontDescriptor(), size: 25)
-            
-            numeratorFreeTextField.color = UIColor.yellow
-            numeratorFreeTextField.font = font
-            numeratorFreeTextField.isReadOnly = false
-            numeratorFreeTextField.contents = "2"
-            
-            let fractionSymbolFreeTextField: PDFAnnotation = PDFAnnotation(bounds: fractionSymbolBox, forType: .freeText, withProperties: nil)
-            
-            fractionSymbolFreeTextField.color = UIColor.lightGray
-            //fractionSymbolFreeTextField.font = UIFont(descriptor: UIFontDescriptor(), size: 25)
-            fractionSymbolFreeTextField.isReadOnly = true
-            fractionSymbolFreeTextField.contents = "/"
-            
-            let denominatorSymbolFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: denominatorBox, forType: .freeText, withProperties: nil)
-            
-            denominatorSymbolFreeTextAnnotation.color = UIColor.yellow
-            //denominatorSymbolFreeTextAnnotation.font = UIFont(descriptor: UIFontDescriptor(), size: 25)
-            denominatorSymbolFreeTextAnnotation.isReadOnly = false
-            denominatorSymbolFreeTextAnnotation.contents = "4"
-            
-            pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(numeratorFreeTextField);
-            pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(fractionSymbolFreeTextField);
-            pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(denominatorSymbolFreeTextAnnotation);
+            self.navigationItem.leftBarButtonItems = [self.doneButton]
+            self.navigationItem.rightBarButtonItems = []
+        case .none:
+            break
         }
     }
 }
