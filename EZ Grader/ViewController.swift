@@ -264,10 +264,12 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         alertController.addTextField { (textField) in
             textField.placeholder = "Points Earned"
+            textField.keyboardType = UIKeyboardType.decimalPad
         }
         
         alertController.addTextField { (textField) in
             textField.placeholder = "Maximum Points"
+            textField.keyboardType = UIKeyboardType.decimalPad
         }
         
         alertController.addAction(addGradeAction)
