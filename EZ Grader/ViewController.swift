@@ -10,6 +10,7 @@ import PDFKit
 enum EZGraderMode {
     case viewPDF
     case annotate
+    case addText
     case addGrade
 }
 
@@ -22,19 +23,20 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var perPageCombined: PDFDocument!
     var perStudentCombined: PDFDocument!
     var isPerPageMode: Bool = true
-
+    
     //MARK: Properties
     @IBOutlet var annotateButton: UIBarButtonItem!
+    @IBOutlet var addTextButton: UIBarButtonItem!
     @IBOutlet var addGradeButton: UIBarButtonItem!
     @IBOutlet var saveButton: UIBarButtonItem!
     @IBOutlet var doneButton: UIBarButtonItem!
     @IBOutlet var viewPerPageButton: UIBarButtonItem!
     @IBOutlet var viewPerStudentButton: UIBarButtonItem!
-    
+
     //MARK: Actions
     @IBAction func annotate(_ sender: UIBarButtonItem) {
         self.path = UIBezierPath()
-
+        
         self.pdfView.isUserInteractionEnabled = false
         
         self.ezGraderMode = EZGraderMode.annotate
@@ -166,7 +168,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.navigationController?.isNavigationBarHidden = true
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -183,22 +185,22 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.path.move(to: touchPageCoordinate)
                     
                     /*let pathRect = CGRect(x: touchPageCoordinate.x, y: touchPageCoordinate.y, width: 1, height: 1)
-                    let tempPath = UIBezierPath(ovalIn: pathRect)
-                    
-                    self.currentAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: .ink, withProperties: nil)
-                    self.currentAnnotation.color = .red
-                    self.currentAnnotation.add(tempPath)
-                    
-                    self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(self.currentAnnotation)
-                    
-                    let rect = CGRect(x: 100.0, y: 100.0, width: 100.0, height: 100.0)
-                    
-                    let annotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
-                    annotation.backgroundColor = .blue
-                    
-                    let pathRect = CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0)
-                    let path = UIBezierPath(ovalIn: pathRect)
-                    annotation.add(path)*/
+                     let tempPath = UIBezierPath(ovalIn: pathRect)
+                     
+                     self.currentAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: .ink, withProperties: nil)
+                     self.currentAnnotation.color = .red
+                     self.currentAnnotation.add(tempPath)
+                     
+                     self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(self.currentAnnotation)
+                     
+                     let rect = CGRect(x: 100.0, y: 100.0, width: 100.0, height: 100.0)
+                     
+                     let annotation = PDFAnnotation(bounds: rect, forType: .ink, withProperties: nil)
+                     annotation.backgroundColor = .blue
+                     
+                     let pathRect = CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0)
+                     let path = UIBezierPath(ovalIn: pathRect)
+                     annotation.add(path)*/
                 } else {
                     self.showInputDialog(touchPageCoordinate: touchPageCoordinate, pdfPageIndexAtTouchedPosition: pdfPageIndexAtTouchedPosition)
                 }
@@ -233,31 +235,14 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         let alertController = UIAlertController(title: "Enter Grade", message: "", preferredStyle: .alert)
         
         let addGradeAction: UIAlertAction = UIAlertAction(title: "Add Grade", style: .default) { (alert: UIAlertAction!) in
-            let numeratorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y + 20), size: CGSize(width: 30, height: 50))
-            let fractionSymbolBox = CGRect(origin: touchPageCoordinate, size: CGSize(width: 30, height: 20))
-            let denominatorBox = CGRect(origin: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y - 50), size: CGSize(width: 30, height: 50))
+            let gradeFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPageCoordinate, size: CGSize(width: 25, height: 70)), forType: .freeText, withProperties: nil)
             
-            let numeratorFreeTextField: PDFAnnotation = PDFAnnotation(bounds: numeratorBox, forType: .freeText, withProperties: nil)
+            gradeFreeTextAnnotation.fontColor = UIColor.red
+            gradeFreeTextAnnotation.color = UIColor.clear
+            gradeFreeTextAnnotation.isReadOnly = true
+            gradeFreeTextAnnotation.contents = (alertController.textFields?[0].text)! + "/" + (alertController.textFields?[1].text)!
             
-            numeratorFreeTextField.color = UIColor.yellow
-            numeratorFreeTextField.isReadOnly = false
-            numeratorFreeTextField.contents = alertController.textFields?[0].text
-            
-            let fractionSymbolFreeTextField: PDFAnnotation = PDFAnnotation(bounds: fractionSymbolBox, forType: .freeText, withProperties: nil)
-            
-            fractionSymbolFreeTextField.color = UIColor.lightGray
-            fractionSymbolFreeTextField.isReadOnly = true
-            fractionSymbolFreeTextField.contents = "/"
-            
-            let denominatorSymbolFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: denominatorBox, forType: .freeText, withProperties: nil)
-            
-            denominatorSymbolFreeTextAnnotation.color = UIColor.yellow
-            denominatorSymbolFreeTextAnnotation.isReadOnly = false
-            denominatorSymbolFreeTextAnnotation.contents = alertController.textFields?[1].text
-            
-            self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(numeratorFreeTextField)
-            self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(fractionSymbolFreeTextField)
-            self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(denominatorSymbolFreeTextAnnotation)
+            self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(gradeFreeTextAnnotation)
         }
         
         let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { (alert: UIAlertAction!) in }
@@ -281,9 +266,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     private func updateNavigationBar() -> Void {
         switch self.ezGraderMode {
         case .viewPDF?:
-            self.navigationItem.leftBarButtonItems = [self.annotateButton, self.addGradeButton, self.saveButton]
+            self.navigationItem.leftBarButtonItems = [self.annotateButton, self.addTextButton, self.addGradeButton, self.saveButton]
             self.navigationItem.rightBarButtonItems = [self.viewPerPageButton, self.viewPerStudentButton]
+            self.navigationItem.title = ""
         case .annotate?,
+             .addText?,
              .addGrade?:
             let currentDoneButtonTintColor: UIColor! = self.doneButton.tintColor
             self.doneButton.tintColor = .clear
@@ -291,8 +278,18 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             
             self.navigationItem.leftBarButtonItems = [self.doneButton]
             self.navigationItem.rightBarButtonItems = []
-        case .none:
+            
+            switch self.ezGraderMode {
+            case .annotate?:
+                self.navigationItem.title = "Annotating"
+            case .addGrade?:
+                self.navigationItem.title = "Adding Grades"
+            default:
+                break
+            }
+        default:
             break
         }
     }
 }
+
