@@ -37,12 +37,16 @@
                     </view>
                     <navigationItem key="navigationItem" id="aur-6e-mcZ">
                         <leftBarButtonItems>
-                            <barButtonItem image="AnnotateIcon" landscapeImage="AnnotateIcon" largeContentSizeImage="AnnotateIcon" id="CIn-ey-iix">
+                            <barButtonItem image="FreeHandAnnotateIcon" landscapeImage="FreeHandAnnotateIcon" largeContentSizeImage="FreeHandAnnotateIcon" id="Fug-N9-Ce7">
                                 <connections>
-                                    <action selector="annotate:" destination="BYZ-38-t0r" id="PU9-DH-euK"/>
+                                    <action selector="freeHandAnnotate:" destination="BYZ-38-t0r" id="TSi-iG-Aad"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem image="AddTextIcon" landscapeImage="AddTextIcon" largeContentSizeImage="AddTextIcon" id="ogZ-jA-ks4"/>
+                            <barButtonItem image="TextAnnotateIcon" landscapeImage="TextAnnotateIcon" largeContentSizeImage="TextAnnotateIcon" id="Rq2-ML-2D7">
+                                <connections>
+                                    <action selector="textAnnotate:" destination="BYZ-38-t0r" id="qzl-G5-dz4"/>
+                                </connections>
+                            </barButtonItem>
                             <barButtonItem image="AddGradeIcon" landscapeImage="AddGradeIcon" largeContentSizeImage="AddGradeIcon" id="5Cc-lE-lfz">
                                 <connections>
                                     <action selector="addGrade:" destination="BYZ-38-t0r" id="EuH-H3-idF"/>
@@ -75,10 +79,10 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addGradeButton" destination="5Cc-lE-lfz" id="Qhr-nj-0kC"/>
-                        <outlet property="addTextButton" destination="ogZ-jA-ks4" id="57F-JM-Kmi"/>
-                        <outlet property="annotateButton" destination="CIn-ey-iix" id="MR2-iy-f5F"/>
                         <outlet property="doneButton" destination="yI8-Ry-rqu" id="Byp-8e-Hlp"/>
+                        <outlet property="freeHandAnnotateButton" destination="Fug-N9-Ce7" id="Xfr-Rf-sPR"/>
                         <outlet property="saveButton" destination="hTB-bM-eeP" id="UEO-0p-5p5"/>
+                        <outlet property="textAnnotateButton" destination="Rq2-ML-2D7" id="ZbZ-Wa-N6H"/>
                         <outlet property="viewPerPageButton" destination="w5k-IZ-lEB" id="X8b-67-2RJ"/>
                         <outlet property="viewPerStudentButton" destination="e5D-s3-XB0" id="iSl-qI-aYO"/>
                     </connections>
@@ -108,8 +112,8 @@
     </scenes>
     <resources>
         <image name="AddGradeIcon" width="16" height="16"/>
-        <image name="AddTextIcon" width="16" height="16"/>
-        <image name="AnnotateIcon" width="16" height="16"/>
+        <image name="FreeHandAnnotateIcon" width="16" height="16"/>
         <image name="SaveIcon" width="16" height="16"/>
+        <image name="TextAnnotateIcon" width="16" height="16"/>
     </resources>
 </document>

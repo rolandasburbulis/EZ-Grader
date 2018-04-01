@@ -9,8 +9,8 @@ import PDFKit
 
 enum EZGraderMode {
     case viewPDF
-    case annotate
-    case addText
+    case freeHandAnnotate
+    case textAnnotate
     case addGrade
 }
 
@@ -25,8 +25,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var isPerPageMode: Bool = true
     
     //MARK: Properties
-    @IBOutlet var annotateButton: UIBarButtonItem!
-    @IBOutlet var addTextButton: UIBarButtonItem!
+    @IBOutlet var freeHandAnnotateButton: UIBarButtonItem!
+    @IBOutlet var textAnnotateButton: UIBarButtonItem!
     @IBOutlet var addGradeButton: UIBarButtonItem!
     @IBOutlet var saveButton: UIBarButtonItem!
     @IBOutlet var doneButton: UIBarButtonItem!
@@ -34,12 +34,18 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet var viewPerStudentButton: UIBarButtonItem!
 
     //MARK: Actions
-    @IBAction func annotate(_ sender: UIBarButtonItem) {
+    @IBAction func freeHandAnnotate(_ sender: UIBarButtonItem) {
         self.path = UIBezierPath()
         
         self.pdfView.isUserInteractionEnabled = false
         
-        self.ezGraderMode = EZGraderMode.annotate
+        self.ezGraderMode = EZGraderMode.freeHandAnnotate
+        
+        self.updateNavigationBar()
+    }
+    
+    @IBAction func textAnnotate(_ sender: UIBarButtonItem) {
+        self.ezGraderMode = EZGraderMode.textAnnotate
         
         self.updateNavigationBar()
     }
@@ -80,7 +86,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @IBAction func doneEditing(_ sender: UIBarButtonItem) {
-        if self.ezGraderMode == EZGraderMode.annotate {
+        if self.ezGraderMode == EZGraderMode.freeHandAnnotate {
             self.currentAnnotation = nil
         }
         
@@ -181,7 +187,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 let pdfPageIndexAtTouchedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTouchedPosition))!
                 let touchPageCoordinate: CGPoint = self.pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
                 
-                if self.ezGraderMode == EZGraderMode.annotate {
+                if self.ezGraderMode == EZGraderMode.freeHandAnnotate {
                     self.path.move(to: touchPageCoordinate)
                     
                     /*let pathRect = CGRect(x: touchPageCoordinate.x, y: touchPageCoordinate.y, width: 1, height: 1)
@@ -201,7 +207,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                      let pathRect = CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0)
                      let path = UIBezierPath(ovalIn: pathRect)
                      annotation.add(path)*/
-                } else {
+                } else if self.ezGraderMode == EZGraderMode.addGrade {
                     self.showInputDialog(touchPageCoordinate: touchPageCoordinate, pdfPageIndexAtTouchedPosition: pdfPageIndexAtTouchedPosition)
                 }
             }
@@ -209,7 +215,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if self.ezGraderMode == EZGraderMode.annotate {
+        if self.ezGraderMode == EZGraderMode.freeHandAnnotate {
             if let touch = touches.first {
                 let touchViewCoordinate: CGPoint = touch.location(in: self.pdfView)
                 let pdfPageAtTouchedPosition: PDFPage = self.pdfView.page(for: touchViewCoordinate, nearest: true)!
@@ -266,11 +272,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     private func updateNavigationBar() -> Void {
         switch self.ezGraderMode {
         case .viewPDF?:
-            self.navigationItem.leftBarButtonItems = [self.annotateButton, self.addTextButton, self.addGradeButton, self.saveButton]
+            self.navigationItem.leftBarButtonItems = [self.freeHandAnnotateButton, self.textAnnotateButton, self.addGradeButton, self.saveButton]
             self.navigationItem.rightBarButtonItems = [self.viewPerPageButton, self.viewPerStudentButton]
             self.navigationItem.title = ""
-        case .annotate?,
-             .addText?,
+        case .freeHandAnnotate?,
+             .textAnnotate?,
              .addGrade?:
             let currentDoneButtonTintColor: UIColor! = self.doneButton.tintColor
             self.doneButton.tintColor = .clear
@@ -280,7 +286,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             self.navigationItem.rightBarButtonItems = []
             
             switch self.ezGraderMode {
-            case .annotate?:
+            case .freeHandAnnotate?,
+                 .textAnnotate?:
                 self.navigationItem.title = "Annotating"
             case .addGrade?:
                 self.navigationItem.title = "Adding Grades"
