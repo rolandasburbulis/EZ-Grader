@@ -22,9 +22,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var path: UIBezierPath!
     var currentAnnotation: PDFAnnotation!
     var numberOfPagesPerDoc: Int!
-    var perPageCombined: PDFDocument!
-    var perStudentCombined: PDFDocument!
-    var isPerPageMode: Bool = true
+    var combinedPDFDocument: PDFDocument!
+    var isPerPageMode: Bool!
     
     //MARK: Properties
     @IBOutlet var freeHandAnnotateButton: UIBarButtonItem!
@@ -67,19 +66,19 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         var docToWriteOut: PDFDocument = PDFDocument()
         
         if self.isPerPageMode {
-            let numberOfDocuments: Int = self.perPageCombined.pageCount / self.numberOfPagesPerDoc
+            let numberOfDocuments: Int = self.combinedPDFDocument.pageCount / self.numberOfPagesPerDoc
             
             for documentNumber: Int in 0...numberOfDocuments - 1 {
                 for pageNumber: Int in 0...self.numberOfPagesPerDoc - 1 {
-                    docToWriteOut.insert(self.perPageCombined.page(at: (pageNumber * numberOfDocuments + documentNumber))!.copy() as! PDFPage, at: docToWriteOut.pageCount)
+                    docToWriteOut.insert(self.combinedPDFDocument.page(at: (pageNumber * numberOfDocuments + documentNumber))!.copy() as! PDFPage, at: docToWriteOut.pageCount)
                 }
                 
                 docToWriteOut.write(toFile: "\(documentsPath)/output\(documentNumber + 1).pdf")
                 docToWriteOut = PDFDocument()
             }
         } else {
-            for pageIndex: Int in 1...self.perStudentCombined.pageCount {
-                docToWriteOut.insert(self.perStudentCombined.page(at: pageIndex - 1)!.copy() as! PDFPage, at: docToWriteOut.pageCount)
+            for pageIndex: Int in 1...self.combinedPDFDocument.pageCount {
+                docToWriteOut.insert(self.combinedPDFDocument.page(at: pageIndex - 1)!.copy() as! PDFPage, at: docToWriteOut.pageCount)
                 
                 if pageIndex % self.numberOfPagesPerDoc == 0 {
                     docToWriteOut.write(toFile: "\(documentsPath)/output\(pageIndex / self.numberOfPagesPerDoc).pdf")
@@ -102,15 +101,53 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @IBAction func viewPerPage(_ sender: UIBarButtonItem) {
-        self.pdfView.document = self.perPageCombined
+        if self.isPerPageMode == true {
+            return
+        }
         
         self.isPerPageMode = true
+        
+        self.viewPerPageButton.style = UIBarButtonItemStyle.done
+        self.viewPerStudentButton.style = UIBarButtonItemStyle.plain
+        
+        let perPageCombinedPDFDocument = PDFDocument()
+        
+        let numberOfDocuments: Int = self.combinedPDFDocument.pageCount / self.numberOfPagesPerDoc
+        
+        for pageIndex: Int in 0...self.numberOfPagesPerDoc - 1 {
+            for documentNumber: Int in 0...numberOfDocuments - 1 {
+                perPageCombinedPDFDocument.insert(self.combinedPDFDocument.page(at: documentNumber * self.numberOfPagesPerDoc + pageIndex)!.copy() as! PDFPage, at: perPageCombinedPDFDocument.pageCount)
+            }
+        }
+        
+        self.combinedPDFDocument = perPageCombinedPDFDocument
+        
+        self.pdfView.document = self.combinedPDFDocument
     }
     
     @IBAction func viewPerStudent(_ sender: UIBarButtonItem) {
-        self.pdfView.document = self.perStudentCombined
+        if self.isPerPageMode == false {
+            return
+        }
         
         self.isPerPageMode = false
+        
+        self.viewPerPageButton.style = UIBarButtonItemStyle.plain
+        self.viewPerStudentButton.style = UIBarButtonItemStyle.done
+        
+        let perStudentCombinedPDFDocument = PDFDocument()
+        
+        let numberOfDocuments: Int = self.combinedPDFDocument.pageCount / self.numberOfPagesPerDoc
+        
+        for documentNumber: Int in 0...numberOfDocuments - 1 {
+            for pageIndex: Int in 0...self.numberOfPagesPerDoc - 1 {
+                perStudentCombinedPDFDocument.insert(self.combinedPDFDocument.page(at: pageIndex * numberOfDocuments + documentNumber)!.copy() as! PDFPage, at: perStudentCombinedPDFDocument.pageCount)
+            }
+        }
+        
+        self.combinedPDFDocument = perStudentCombinedPDFDocument
+        
+        self.pdfView.document = self.combinedPDFDocument
     }
     
     @IBAction func startGrading(_ sender: UIButton) {
@@ -139,22 +176,14 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         sender.isHidden = true
         
-        self.perStudentCombined = PDFDocument()
-        self.perPageCombined = PDFDocument()
-        
-        for pdfDocumentUrl: URL in pdfDocumentUrls {
-            pdfDocument = PDFDocument(url: pdfDocumentUrl)
-            
-            for pageIndex: Int in 0...pdfDocument.pageCount - 1 {
-                self.perStudentCombined.insert(pdfDocument.page(at: pageIndex)!.copy() as! PDFPage, at: self.perStudentCombined.pageCount)
-            }
-        }
+        self.isPerPageMode = true
+        self.combinedPDFDocument = PDFDocument()
         
         for pageIndex: Int in 0...self.numberOfPagesPerDoc - 1 {
             for pdfDocumentUrl: URL in pdfDocumentUrls {
                 let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentUrl)!.page(at: pageIndex))!.copy() as! PDFPage
                 
-                self.perPageCombined.insert(pdfPage, at: self.perPageCombined.pageCount)
+                self.combinedPDFDocument.insert(pdfPage, at: self.combinedPDFDocument.pageCount)
             }
         }
         
@@ -162,13 +191,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.pdfView.displayMode = .singlePageContinuous
         self.pdfView.autoScales = true
-        self.pdfView.document = self.perPageCombined
+        self.pdfView.document = self.combinedPDFDocument
         
         self.view.addSubview(self.pdfView)
         
         self.ezGraderMode = EZGraderMode.viewPDF
         
         self.navigationController?.isNavigationBarHidden = false
+        
+        self.viewPerPageButton.style = UIBarButtonItemStyle.done
         
         self.updateNavigationBar()
     }
