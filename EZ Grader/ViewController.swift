@@ -15,6 +15,8 @@ enum EZGraderMode {
 }
 
 class ViewController: UIViewController, UIGestureRecognizerDelegate {
+    let appFontSize: CGFloat = 30
+    
     var ezGraderMode: EZGraderMode?
     var pdfView: PDFView!
     var path: UIBezierPath!
@@ -256,6 +258,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             let textAnnotationFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPageCoordinate, size: CGSize(width: enteredTextSize.height, height: enteredTextSize.width)), forType: .freeText, withProperties: nil)
             
             textAnnotationFreeTextAnnotation.fontColor = UIColor.red
+            textAnnotationFreeTextAnnotation.font = UIFont.systemFont(ofSize: self.appFontSize)
             textAnnotationFreeTextAnnotation.color = UIColor.clear
             textAnnotationFreeTextAnnotation.isReadOnly = true
             textAnnotationFreeTextAnnotation.contents = enteredText
@@ -285,6 +288,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             let gradeFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPageCoordinate, size: CGSize(width: enteredTextSize.height, height: enteredTextSize.width)), forType: .freeText, withProperties: nil)
             
             gradeFreeTextAnnotation.fontColor = UIColor.red
+            gradeFreeTextAnnotation.font = UIFont.systemFont(ofSize: self.appFontSize)
             gradeFreeTextAnnotation.color = UIColor.clear
             gradeFreeTextAnnotation.isReadOnly = true
             gradeFreeTextAnnotation.contents = enteredText
@@ -311,7 +315,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func getTextSize(text: String) -> CGSize {
-        let font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
+        let font = UIFont.systemFont(ofSize: self.appFontSize)
         let fontAttributes = [NSAttributedStringKey.font: font]
         
         return (text as NSString).size(withAttributes: fontAttributes)
