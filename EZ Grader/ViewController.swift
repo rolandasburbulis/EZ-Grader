@@ -36,7 +36,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     //MARK: Actions
     @IBAction func freeHandAnnotate(_ sender: UIBarButtonItem) {
         self.path = UIBezierPath()
-        
+
         self.pdfView.isUserInteractionEnabled = false
         
         self.ezGraderMode = EZGraderMode.freeHandAnnotate
@@ -45,6 +45,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @IBAction func textAnnotate(_ sender: UIBarButtonItem) {
+        self.pdfView.isUserInteractionEnabled = false
+        
         self.ezGraderMode = EZGraderMode.textAnnotate
         
         self.updateNavigationBar()
@@ -207,8 +209,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                      let pathRect = CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0)
                      let path = UIBezierPath(ovalIn: pathRect)
                      annotation.add(path)*/
+                } else if self.ezGraderMode == EZGraderMode.textAnnotate {
+                    self.showAddTextAnnotationInputDialog(touchPageCoordinate: touchPageCoordinate, pdfPageIndexAtTouchedPosition: pdfPageIndexAtTouchedPosition)
                 } else if self.ezGraderMode == EZGraderMode.addGrade {
-                    self.showInputDialog(touchPageCoordinate: touchPageCoordinate, pdfPageIndexAtTouchedPosition: pdfPageIndexAtTouchedPosition)
+                    self.showAddGradeInputDialog(touchPageCoordinate: touchPageCoordinate, pdfPageIndexAtTouchedPosition: pdfPageIndexAtTouchedPosition)
                 }
             }
         }
@@ -228,25 +232,62 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.removeAnnotation(self.currentAnnotation)
                 }
                 
-                self.currentAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: .ink, withProperties: nil)
+                let currentAnnotationPDFBorder = PDFBorder()
+                
+                currentAnnotationPDFBorder.lineWidth = 2.0
+                
+                self.currentAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: PDFAnnotationSubtype.ink, withProperties: nil)
                 self.currentAnnotation.color = .red
                 self.currentAnnotation.add(self.path)
+                self.currentAnnotation.border = currentAnnotationPDFBorder
                 
                 self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(self.currentAnnotation)
             }
         }
     }
     
-    private func showInputDialog(touchPageCoordinate: CGPoint, pdfPageIndexAtTouchedPosition: Int) -> Void {
-        let alertController = UIAlertController(title: "Enter Grade", message: "", preferredStyle: .alert)
+    private func showAddTextAnnotationInputDialog(touchPageCoordinate: CGPoint, pdfPageIndexAtTouchedPosition: Int) -> Void {
+        let alertController = UIAlertController(title: "New Text Annotation", message: "", preferredStyle: .alert)
+        
+        let addTextAnnotationAction: UIAlertAction = UIAlertAction(title: "Add Text Annotation", style: .default) { (alert: UIAlertAction!) in
+            let enteredText: String = (alertController.textFields?[0].text)!
+            let enteredTextSize: CGSize = self.getTextSize(text: enteredText)
+            
+            let textAnnotationFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPageCoordinate, size: CGSize(width: enteredTextSize.height, height: enteredTextSize.width)), forType: .freeText, withProperties: nil)
+            
+            textAnnotationFreeTextAnnotation.fontColor = UIColor.red
+            textAnnotationFreeTextAnnotation.color = UIColor.clear
+            textAnnotationFreeTextAnnotation.isReadOnly = true
+            textAnnotationFreeTextAnnotation.contents = enteredText
+            
+            self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(textAnnotationFreeTextAnnotation)
+        }
+        
+        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { (alert: UIAlertAction!) in }
+        
+        alertController.addTextField { (textField) in
+            textField.placeholder = "Text Annotation"
+        }
+        
+        alertController.addAction(addTextAnnotationAction)
+        alertController.addAction(cancelAction)
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    private func showAddGradeInputDialog(touchPageCoordinate: CGPoint, pdfPageIndexAtTouchedPosition: Int) -> Void {
+        let alertController = UIAlertController(title: "New Grade", message: "", preferredStyle: .alert)
         
         let addGradeAction: UIAlertAction = UIAlertAction(title: "Add Grade", style: .default) { (alert: UIAlertAction!) in
-            let gradeFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPageCoordinate, size: CGSize(width: 25, height: 70)), forType: .freeText, withProperties: nil)
+            let enteredText: String = (alertController.textFields?[0].text)! + "/" + (alertController.textFields?[1].text)!
+            let enteredTextSize: CGSize = self.getTextSize(text: enteredText)
+            
+            let gradeFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPageCoordinate, size: CGSize(width: enteredTextSize.height, height: enteredTextSize.width)), forType: .freeText, withProperties: nil)
             
             gradeFreeTextAnnotation.fontColor = UIColor.red
             gradeFreeTextAnnotation.color = UIColor.clear
             gradeFreeTextAnnotation.isReadOnly = true
-            gradeFreeTextAnnotation.contents = (alertController.textFields?[0].text)! + "/" + (alertController.textFields?[1].text)!
+            gradeFreeTextAnnotation.contents = enteredText
             
             self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(gradeFreeTextAnnotation)
         }
@@ -267,6 +308,13 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         alertController.addAction(cancelAction)
         
         self.present(alertController, animated: true, completion: nil)
+    }
+    
+    private func getTextSize(text: String) -> CGSize {
+        let font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
+        let fontAttributes = [NSAttributedStringKey.font: font]
+        
+        return (text as NSString).size(withAttributes: fontAttributes)
     }
     
     private func updateNavigationBar() -> Void {
