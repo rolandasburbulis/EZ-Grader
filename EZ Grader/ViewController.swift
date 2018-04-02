@@ -251,7 +251,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         let addTextAnnotationAction: UIAlertAction = UIAlertAction(title: "Add Text Annotation", style: .default) { (alert: UIAlertAction!) in
             let enteredText: String = (alertController.textFields?[0].text)!
-            let enteredTextSize: CGSize = self.getTextSize(text: enteredText)
+            let enteredTextSize: CGSize = self.getTextSize(text: enteredText + "  ")
             
             let textAnnotationFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPageCoordinate, size: CGSize(width: enteredTextSize.height, height: enteredTextSize.width)), forType: .freeText, withProperties: nil)
             
@@ -280,7 +280,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         let addGradeAction: UIAlertAction = UIAlertAction(title: "Add Grade", style: .default) { (alert: UIAlertAction!) in
             let enteredText: String = (alertController.textFields?[0].text)! + "/" + (alertController.textFields?[1].text)!
-            let enteredTextSize: CGSize = self.getTextSize(text: enteredText)
+            let enteredTextSize: CGSize = self.getTextSize(text: enteredText + "  ")
             
             let gradeFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPageCoordinate, size: CGSize(width: enteredTextSize.height, height: enteredTextSize.width)), forType: .freeText, withProperties: nil)
             
