@@ -331,18 +331,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         let alertController = UIAlertController(title: "New Grade", message: "", preferredStyle: .alert)
         
         let addGradeAction: UIAlertAction = UIAlertAction(title: "Add Grade", style: .default) { (alert: UIAlertAction!) in
-            let enteredText: String = (alertController.textFields?[0].text)! + "/" + (alertController.textFields?[1].text)!
-            let enteredTextSize: CGSize = self.getTextSize(text: enteredText + "  ")
-            
-            let gradeFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPageCoordinate, size: CGSize(width: enteredTextSize.height, height: enteredTextSize.width)), forType: .freeText, withProperties: nil)
-            
-            gradeFreeTextAnnotation.fontColor = UIColor.red
-            gradeFreeTextAnnotation.font = UIFont.systemFont(ofSize: self.appFontSize)
-            gradeFreeTextAnnotation.color = UIColor.clear
-            gradeFreeTextAnnotation.isReadOnly = true
-            gradeFreeTextAnnotation.contents = enteredText
-            
-            self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(gradeFreeTextAnnotation)
+            self.addGradeToAllStudents(pointsEarned: (alertController.textFields?[0].text)!, maximumPoints: (alertController.textFields?[1].text)!, touchPageCoordinate: touchPageCoordinate, pdfPageIndexAtTouchedPosition: pdfPageIndexAtTouchedPosition)
         }
         
         let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .cancel) { (alert: UIAlertAction!) in }
@@ -361,6 +350,38 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         alertController.addAction(cancelAction)
         
         self.present(alertController, animated: true, completion: nil)
+    }
+    
+    private func addGradeToAllStudents(pointsEarned: String, maximumPoints: String, touchPageCoordinate: CGPoint, pdfPageIndexAtTouchedPosition: Int) -> Void {
+        let gradeForCurrentStudent: String = pointsEarned + " / " + maximumPoints
+        let gradeForOtherStudents: String =  "? / " + maximumPoints
+        
+        if self.isPerPageMode {
+            let numberOfDocuments: Int = self.combinedPDFDocument.pageCount / self.numberOfPagesPerDoc
+            let indexOfPDFPageOfFirstStudent: Int = pdfPageIndexAtTouchedPosition - (pdfPageIndexAtTouchedPosition % numberOfDocuments)
+            
+            for indexOfPDFPageToAddAnnotationTo: Int in indexOfPDFPageOfFirstStudent...indexOfPDFPageOfFirstStudent + numberOfDocuments - 1 {
+                self.pdfView.document?.page(at: indexOfPDFPageToAddAnnotationTo)?.addAnnotation(createGradeFreeTextAnnotation(gradeText: indexOfPDFPageToAddAnnotationTo == pdfPageIndexAtTouchedPosition ? gradeForCurrentStudent : gradeForOtherStudents, touchPageCoordinate: touchPageCoordinate))
+            }
+        } else {
+            for indexOfPDFPageToAddAnnotationTo: Int in stride(from: pdfPageIndexAtTouchedPosition % self.numberOfPagesPerDoc, to: self.combinedPDFDocument.pageCount - 1, by: self.numberOfPagesPerDoc) {
+                self.pdfView.document?.page(at: indexOfPDFPageToAddAnnotationTo)?.addAnnotation(createGradeFreeTextAnnotation(gradeText: indexOfPDFPageToAddAnnotationTo == pdfPageIndexAtTouchedPosition ? gradeForCurrentStudent : gradeForOtherStudents, touchPageCoordinate: touchPageCoordinate))
+            }
+        }
+    }
+    
+    private func createGradeFreeTextAnnotation(gradeText: String, touchPageCoordinate: CGPoint) -> PDFAnnotation {
+        let gradeTextSize: CGSize = self.getTextSize(text: gradeText + "  ")
+        
+        let gradeFreeTextAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPageCoordinate, size: CGSize(width: gradeTextSize.height, height: gradeTextSize.width)), forType: .freeText, withProperties: nil)
+        
+        gradeFreeTextAnnotation.fontColor = UIColor.red
+        gradeFreeTextAnnotation.font = UIFont.systemFont(ofSize: self.appFontSize)
+        gradeFreeTextAnnotation.color = UIColor.clear
+        gradeFreeTextAnnotation.isReadOnly = true
+        gradeFreeTextAnnotation.contents = gradeText
+        
+        return gradeFreeTextAnnotation
     }
     
     private func getTextSize(text: String) -> CGSize {
@@ -400,4 +421,3 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
 }
-
