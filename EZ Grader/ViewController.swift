@@ -71,7 +71,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             
             for documentNumber: Int in 0...numberOfDocuments - 1 {
                 for pageNumber: Int in 0...self.numberOfPagesPerDoc - 1 {
-                    docToWriteOut.insert(self.combinedPDFDocument.page(at: (pageNumber * numberOfDocuments + documentNumber))!.copy() as! PDFPage, at: docToWriteOut.pageCount)
+                    docToWriteOut.insert(self.combinedPDFDocument.page(at: (pageNumber * numberOfDocuments + documentNumber))!, at: docToWriteOut.pageCount)
                 }
                 
                 docToWriteOut.write(toFile: "\(documentsPath)/output\(documentNumber + 1).pdf")
@@ -79,7 +79,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         } else {
             for pageIndex: Int in 1...self.combinedPDFDocument.pageCount {
-                docToWriteOut.insert(self.combinedPDFDocument.page(at: pageIndex - 1)!.copy() as! PDFPage, at: docToWriteOut.pageCount)
+                docToWriteOut.insert(self.combinedPDFDocument.page(at: pageIndex - 1)!, at: docToWriteOut.pageCount)
                 
                 if pageIndex % self.numberOfPagesPerDoc == 0 {
                     docToWriteOut.write(toFile: "\(documentsPath)/output\(pageIndex / self.numberOfPagesPerDoc).pdf")
@@ -117,7 +117,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         for pageIndex: Int in 0...self.numberOfPagesPerDoc - 1 {
             for documentNumber: Int in 0...numberOfDocuments - 1 {
-                perPageCombinedPDFDocument.insert(self.combinedPDFDocument.page(at: documentNumber * self.numberOfPagesPerDoc + pageIndex)!.copy() as! PDFPage, at: perPageCombinedPDFDocument.pageCount)
+                perPageCombinedPDFDocument.insert(self.combinedPDFDocument.page(at: documentNumber * self.numberOfPagesPerDoc + pageIndex)!, at: perPageCombinedPDFDocument.pageCount)
             }
         }
         
@@ -142,7 +142,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         for documentNumber: Int in 0...numberOfDocuments - 1 {
             for pageIndex: Int in 0...self.numberOfPagesPerDoc - 1 {
-                perStudentCombinedPDFDocument.insert(self.combinedPDFDocument.page(at: pageIndex * numberOfDocuments + documentNumber)!.copy() as! PDFPage, at: perStudentCombinedPDFDocument.pageCount)
+                perStudentCombinedPDFDocument.insert(self.combinedPDFDocument.page(at: pageIndex * numberOfDocuments + documentNumber)!, at: perStudentCombinedPDFDocument.pageCount)
             }
         }
         
@@ -182,7 +182,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         for pageIndex: Int in 0...self.numberOfPagesPerDoc - 1 {
             for pdfDocumentUrl: URL in pdfDocumentUrls {
-                let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentUrl)!.page(at: pageIndex))!.copy() as! PDFPage
+                let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentUrl)!.page(at: pageIndex))!
                 
                 self.combinedPDFDocument.insert(pdfPage, at: self.combinedPDFDocument.pageCount)
             }
@@ -192,6 +192,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.pdfView.displayMode = .singlePageContinuous
         self.pdfView.autoScales = true
+        self.pdfView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.pdfView.document = self.combinedPDFDocument
         
         self.view.addSubview(self.pdfView)
