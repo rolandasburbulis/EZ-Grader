@@ -112,6 +112,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         self.viewPerPageButton.tintColor = UIColor.red
         self.viewPerStudentButton.tintColor = self.appDefaultButtonTintColor
         
+        let currentPDFPage: PDFPage = self.pdfView.currentPage!
+        
         let perPageCombinedPDFDocument = PDFDocument()
         
         let numberOfDocuments: Int = self.combinedPDFDocument.pageCount / self.numberOfPagesPerDoc
@@ -125,6 +127,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         self.combinedPDFDocument = perPageCombinedPDFDocument
         
         self.pdfView.document = self.combinedPDFDocument
+        
+        self.pdfView.go(to: currentPDFPage)
         
         for pageIndex: Int in 0...self.combinedPDFDocument.pageCount {
             if self.combinedPDFDocument.page(at: pageIndex)?.annotations != nil {
@@ -146,6 +150,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         self.viewPerPageButton.tintColor = self.appDefaultButtonTintColor
         self.viewPerStudentButton.tintColor = UIColor.red
         
+        let currentPDFPage: PDFPage = self.pdfView.currentPage!
+        
         let perStudentCombinedPDFDocument = PDFDocument()
         
         let numberOfDocuments: Int = self.combinedPDFDocument.pageCount / self.numberOfPagesPerDoc
@@ -159,6 +165,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         self.combinedPDFDocument = perStudentCombinedPDFDocument
         
         self.pdfView.document = self.combinedPDFDocument
+        
+        self.pdfView.go(to: currentPDFPage)
     }
     
     @IBAction func startGrading(_ sender: UIButton) {
@@ -286,9 +294,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 let pdfPageIndexAtTouchedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTouchedPosition))!
                 let touchPageCoordinate: CGPoint = self.pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
                 
-                self.path.addLine(to: CGPoint(x: touchPageCoordinate.x + 2, y: touchPageCoordinate.y))
-                self.path.addLine(to: CGPoint(x: touchPageCoordinate.x + 2, y: touchPageCoordinate.y + 2))
-                self.path.addLine(to: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y + 2))
+                self.path.addLine(to: CGPoint(x: touchPageCoordinate.x + 1, y: touchPageCoordinate.y))
+                self.path.addLine(to: CGPoint(x: touchPageCoordinate.x + 1, y: touchPageCoordinate.y + 1))
+                self.path.addLine(to: CGPoint(x: touchPageCoordinate.x, y: touchPageCoordinate.y + 1))
                 self.path.addLine(to: touchPageCoordinate)
                 
                 if self.currentAnnotation != nil {
