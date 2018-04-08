@@ -25,6 +25,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var combinedPDFDocument: PDFDocument!
     var isPerPageMode: Bool!
     var isDot: Bool!
+    var appDefaultButtonTintColor: UIColor!
     
     //MARK: Properties
     @IBOutlet var freeHandAnnotateButton: UIBarButtonItem!
@@ -108,8 +109,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.isPerPageMode = true
         
-        self.viewPerPageButton.style = UIBarButtonItemStyle.done
-        self.viewPerStudentButton.style = UIBarButtonItemStyle.plain
+        self.viewPerPageButton.tintColor = UIColor.red
+        self.viewPerStudentButton.tintColor = self.appDefaultButtonTintColor
         
         let perPageCombinedPDFDocument = PDFDocument()
         
@@ -124,6 +125,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         self.combinedPDFDocument = perPageCombinedPDFDocument
         
         self.pdfView.document = self.combinedPDFDocument
+        
+        for pageIndex: Int in 0...self.combinedPDFDocument.pageCount {
+            if self.combinedPDFDocument.page(at: pageIndex)?.annotations != nil {
+                for annotation: PDFAnnotation in (self.combinedPDFDocument.page(at: pageIndex)?.annotations)! {
+                    print("Anno: " + annotation.contents!)
+                    print(annotation.annotationKeyValues[PDFAnnotationKey.widgetCaption])
+                }
+            }
+        }
     }
     
     @IBAction func viewPerStudent(_ sender: UIBarButtonItem) {
@@ -133,8 +143,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.isPerPageMode = false
         
-        self.viewPerPageButton.style = UIBarButtonItemStyle.plain
-        self.viewPerStudentButton.style = UIBarButtonItemStyle.done
+        self.viewPerPageButton.tintColor = self.appDefaultButtonTintColor
+        self.viewPerStudentButton.tintColor = UIColor.red
         
         let perStudentCombinedPDFDocument = PDFDocument()
         
@@ -199,9 +209,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.ezGraderMode = EZGraderMode.viewPDF
         
-        self.navigationController?.isNavigationBarHidden = false
+        self.viewPerPageButton.tintColor = UIColor.red
         
-        self.viewPerPageButton.style = UIBarButtonItemStyle.done
+        self.navigationController?.isNavigationBarHidden = false
         
         self.updateNavigationBar()
     }
@@ -210,6 +220,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         
         self.navigationController?.isNavigationBarHidden = true
+        self.appDefaultButtonTintColor = self.viewPerPageButton.tintColor
     }
     
     override func didReceiveMemoryWarning() {
@@ -312,6 +323,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             textAnnotationFreeTextAnnotation.color = UIColor.clear
             textAnnotationFreeTextAnnotation.isReadOnly = true
             textAnnotationFreeTextAnnotation.contents = enteredText
+            textAnnotationFreeTextAnnotation.setValue("Text Annotation", forAnnotationKey: PDFAnnotationKey.widgetCaption)
             
             self.pdfView.document?.page(at: pdfPageIndexAtTouchedPosition)?.addAnnotation(textAnnotationFreeTextAnnotation)
         }
@@ -381,6 +393,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         gradeFreeTextAnnotation.color = UIColor.clear
         gradeFreeTextAnnotation.isReadOnly = true
         gradeFreeTextAnnotation.contents = gradeText
+        gradeFreeTextAnnotation.setValue("Grade Annotation", forAnnotationKey: PDFAnnotationKey.widgetCaption)
         
         return gradeFreeTextAnnotation
     }
@@ -396,15 +409,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
         switch self.ezGraderMode {
         case .viewPDF?:
             self.navigationItem.leftBarButtonItems = [self.freeHandAnnotateButton, self.textAnnotateButton, self.addGradeButton, self.saveButton]
-            self.navigationItem.rightBarButtonItems = [self.viewPerPageButton, self.viewPerStudentButton]
+            self.navigationItem.rightBarButtonItems = [self.viewPerStudentButton, self.viewPerPageButton]
             self.navigationItem.title = ""
         case .freeHandAnnotate?,
              .textAnnotate?,
              .addGrade?:
-            let currentDoneButtonTintColor: UIColor! = self.doneButton.tintColor
-            self.doneButton.tintColor = .clear
-            self.doneButton.tintColor = currentDoneButtonTintColor
-            
             self.navigationItem.leftBarButtonItems = [self.doneButton]
             self.navigationItem.rightBarButtonItems = []
             

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="gW4-6B-OM6">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="gW4-6B-OM6">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -57,20 +57,19 @@
                                     <action selector="save:" destination="BYZ-38-t0r" id="zsj-0a-fIT"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem systemItem="done" id="yI8-Ry-rqu">
+                            <barButtonItem image="DoneIcon" landscapeImage="DoneIcon" largeContentSizeImage="DoneIcon" id="yI8-Ry-rqu">
                                 <connections>
                                     <action selector="doneEditing:" destination="BYZ-38-t0r" id="Z8z-EH-808"/>
                                 </connections>
                             </barButtonItem>
                         </leftBarButtonItems>
                         <rightBarButtonItems>
-                            <barButtonItem title="Per Student" id="e5D-s3-XB0">
+                            <barButtonItem image="ViewPerStudentIcon" landscapeImage="ViewPerStudentIcon" largeContentSizeImage="ViewPerStudentIcon" id="e5D-s3-XB0">
                                 <connections>
                                     <action selector="viewPerStudent:" destination="BYZ-38-t0r" id="xTT-Bl-j38"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem title="Per Page" id="w5k-IZ-lEB">
-                                <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <barButtonItem image="ViewPerPageIcon" landscapeImage="ViewPerPageIcon" largeContentSizeImage="ViewPerPageIcon" id="w5k-IZ-lEB">
                                 <connections>
                                     <action selector="viewPerPage:" destination="BYZ-38-t0r" id="YPF-hf-OEP"/>
                                 </connections>
@@ -112,8 +111,11 @@
     </scenes>
     <resources>
         <image name="AddGradeIcon" width="16" height="16"/>
+        <image name="DoneIcon" width="16" height="16"/>
         <image name="FreeHandAnnotateIcon" width="16" height="16"/>
         <image name="SaveIcon" width="16" height="16"/>
         <image name="TextAnnotateIcon" width="16" height="16"/>
+        <image name="ViewPerPageIcon" width="16" height="16"/>
+        <image name="ViewPerStudentIcon" width="16" height="16"/>
     </resources>
 </document>
