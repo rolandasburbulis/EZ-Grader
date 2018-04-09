@@ -236,8 +236,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if self.ezGraderMode != EZGraderMode.viewPDF {
-            if let touch = touches.first {
+        if self.ezGraderMode == EZGraderMode.freeHandAnnotate || self.ezGraderMode == EZGraderMode.textAnnotate || self.ezGraderMode == EZGraderMode.addGrade {
+            if let touch: UITouch = touches.first {
                 let touchViewCoordinate: CGPoint = touch.location(in: self.pdfView)
                 let pdfPageAtTouchedPosition: PDFPage = self.pdfView.page(for: touchViewCoordinate, nearest: true)!
                 let pdfPageIndexAtTouchedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTouchedPosition))!
@@ -258,7 +258,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if self.ezGraderMode == EZGraderMode.freeHandAnnotate {
-            if let touch = touches.first {
+            if let touch: UITouch = touches.first {
                 let touchViewCoordinate: CGPoint = touch.location(in: self.pdfView)
                 let pdfPageAtTouchedPosition: PDFPage = self.pdfView.page(for: touchViewCoordinate, nearest: true)!
                 let pdfPageIndexAtTouchedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTouchedPosition))!
@@ -288,7 +288,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         if self.ezGraderMode == EZGraderMode.freeHandAnnotate && self.isDot {
-            if let touch = touches.first {
+            if let touch: UITouch = touches.first {
                 let touchViewCoordinate: CGPoint = touch.location(in: self.pdfView)
                 let pdfPageAtTouchedPosition: PDFPage = self.pdfView.page(for: touchViewCoordinate, nearest: true)!
                 let pdfPageIndexAtTouchedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTouchedPosition))!
