@@ -198,7 +198,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 self.numberOfPagesPerPDFDocument = pdfDocument.pageCount
             } else if self.numberOfPagesPerPDFDocument != pdfDocument.pageCount {
                 // create the alert
-                let pdfDocumentPageCountMismatchUIAlertController: UIAlertController = UIAlertController(title: "Page Count Mismatch", message: "All of the documents to be graded must have the same number of pages.", preferredStyle: UIAlertControllerStyle.alert)
+                let pdfDocumentPageCountMismatchUIAlertController: UIAlertController = UIAlertController(title: "PDF Document Page Count Mismatch", message: "All of the PDF documents to be graded must have the same number of pages.", preferredStyle: UIAlertControllerStyle.alert)
                 
                 // add the actions (buttons)
                 pdfDocumentPageCountMismatchUIAlertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
@@ -385,6 +385,46 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                     csvFileContentsString += "\n"
                 }
             }
+            
+            csvFileContentsString += "TOTAL,-"
+            
+            var pointsEarnedMissing: Bool = false
+            var pointsEarnedRunningTotal: Double
+            var maximumPointsRunningTotal: Double
+            var gradeComponentsTrimmedWhitespace: [String]
+            
+            for pdfDocumentFileName: String in self.pdfDocumentFileNames {
+                pointsEarnedRunningTotal = 0
+                maximumPointsRunningTotal = 0
+                
+                for pdfDocumentPageNumberHavingGrades: Int in pdfDocumentPageNumbersHavingGradesSorted {
+                    for grade: String in grades[pdfDocumentFileName]![pdfDocumentPageNumberHavingGrades]! {
+                        gradeComponentsTrimmedWhitespace = grade.components(separatedBy: "/").map({ (gradeComponent: String) -> String in
+                            return gradeComponent.trimmingCharacters(in: CharacterSet.whitespaces)
+                        })
+                    
+                        if !pointsEarnedMissing {
+                            if let pointsEarned: Double = Double(gradeComponentsTrimmedWhitespace[0]) {
+                                pointsEarnedRunningTotal += pointsEarned
+                            } else {
+                                pointsEarnedMissing = true
+                            }
+                        }
+                        
+                        maximumPointsRunningTotal += Double(gradeComponentsTrimmedWhitespace[1])!
+                    }
+                }
+                
+                csvFileContentsString += !pointsEarnedMissing ? ",\(pointsEarnedRunningTotal)" : ",?"
+                
+                csvFileContentsString += " / \(maximumPointsRunningTotal) ("
+                
+                csvFileContentsString += !pointsEarnedMissing ? "\((pointsEarnedRunningTotal / maximumPointsRunningTotal * 10000).rounded(FloatingPointRoundingRule.toNearestOrEven) / 100)" : "?"
+                
+                csvFileContentsString += "%)"
+            }
+            
+            csvFileContentsString += "\n"
         }
         
         let fileManager = FileManager.default
