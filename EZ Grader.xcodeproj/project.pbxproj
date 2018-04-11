@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		38D9EBF2207DC102000CBE89 /* good.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 38D9EBEE207DC102000CBE89 /* good.pdf */; };
+		38D9EBF3207DC102000CBE89 /* different.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 38D9EBEF207DC102000CBE89 /* different.pdf */; };
+		38D9EBF4207DC102000CBE89 /* avg.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 38D9EBF0207DC102000CBE89 /* avg.pdf */; };
+		38D9EBF5207DC102000CBE89 /* poor.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 38D9EBF1207DC102000CBE89 /* poor.pdf */; };
 		38E8A1D3206B8D55003ABA99 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38E8A1D2206B8D55003ABA99 /* Launch Screen.storyboard */; };
 		84CACB062020310F008D8AB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB052020310F008D8AB1 /* AppDelegate.swift */; };
 		84CACB082020310F008D8AB1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB072020310F008D8AB1 /* ViewController.swift */; };
@@ -16,6 +20,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		38D9EBEE207DC102000CBE89 /* good.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = good.pdf; sourceTree = "<group>"; };
+		38D9EBEF207DC102000CBE89 /* different.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = different.pdf; sourceTree = "<group>"; };
+		38D9EBF0207DC102000CBE89 /* avg.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = avg.pdf; sourceTree = "<group>"; };
+		38D9EBF1207DC102000CBE89 /* poor.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = poor.pdf; sourceTree = "<group>"; };
 		38E8A1D2206B8D55003ABA99 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		84CACB022020310F008D8AB1 /* EZ Grader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EZ Grader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84CACB052020310F008D8AB1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -37,6 +45,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		38D9EBED207DC102000CBE89 /* PDFs */ = {
+			isa = PBXGroup;
+			children = (
+				38D9EBEE207DC102000CBE89 /* good.pdf */,
+				38D9EBEF207DC102000CBE89 /* different.pdf */,
+				38D9EBF0207DC102000CBE89 /* avg.pdf */,
+				38D9EBF1207DC102000CBE89 /* poor.pdf */,
+			);
+			path = PDFs;
+			sourceTree = "<group>";
+		};
 		84CACAF92020310F008D8AB1 = {
 			isa = PBXGroup;
 			children = (
@@ -56,6 +75,7 @@
 		84CACB042020310F008D8AB1 /* EZ Grader */ = {
 			isa = PBXGroup;
 			children = (
+				38D9EBED207DC102000CBE89 /* PDFs */,
 				84CACB052020310F008D8AB1 /* AppDelegate.swift */,
 				84CACB072020310F008D8AB1 /* ViewController.swift */,
 				84CACB092020310F008D8AB1 /* Main.storyboard */,
@@ -127,6 +147,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				38E8A1D3206B8D55003ABA99 /* Launch Screen.storyboard in Resources */,
+				38D9EBF2207DC102000CBE89 /* good.pdf in Resources */,
+				38D9EBF3207DC102000CBE89 /* different.pdf in Resources */,
+				38D9EBF5207DC102000CBE89 /* poor.pdf in Resources */,
+				38D9EBF4207DC102000CBE89 /* avg.pdf in Resources */,
 				84CACB102020310F008D8AB1 /* Assets.xcassets in Resources */,
 				84CACB0B2020310F008D8AB1 /* Main.storyboard in Resources */,
 			);
