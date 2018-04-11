@@ -19,12 +19,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="center" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ad-w9-bkh">
+                            <button opaque="NO" contentMode="center" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ad-w9-bkh" userLabel="Start Grading Button">
                                 <rect key="frame" x="75.5" y="306" width="224" height="55"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
                                 <state key="normal" title="Start Grading"/>
                                 <connections>
-                                    <action selector="startGrading:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kCO-Mf-GTf"/>
+                                    <action selector="startGrading:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gkb-87-gKH"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -57,33 +57,33 @@
                                     <action selector="save:" destination="BYZ-38-t0r" id="zsj-0a-fIT"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem image="DoneIcon" landscapeImage="DoneIcon" largeContentSizeImage="DoneIcon" id="yI8-Ry-rqu">
+                            <barButtonItem image="DoneEditingIcon" landscapeImage="DoneEditingIcon" largeContentSizeImage="DoneEditingIcon" id="yI8-Ry-rqu">
                                 <connections>
                                     <action selector="doneEditing:" destination="BYZ-38-t0r" id="Z8z-EH-808"/>
                                 </connections>
                             </barButtonItem>
                         </leftBarButtonItems>
                         <rightBarButtonItems>
-                            <barButtonItem image="ViewPerStudentIcon" landscapeImage="ViewPerStudentIcon" largeContentSizeImage="ViewPerStudentIcon" id="e5D-s3-XB0">
+                            <barButtonItem image="ViewPerPDFDocumentIcon" landscapeImage="ViewPerPDFDocumentIcon" largeContentSizeImage="ViewPerPDFDocumentIcon" id="e5D-s3-XB0" userLabel="View Per PDF Document Button">
                                 <connections>
-                                    <action selector="viewPerStudent:" destination="BYZ-38-t0r" id="xTT-Bl-j38"/>
+                                    <action selector="viewPerPDFDocument:" destination="BYZ-38-t0r" id="xTT-Bl-j38"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem image="ViewPerPageIcon" landscapeImage="ViewPerPageIcon" largeContentSizeImage="ViewPerPageIcon" id="w5k-IZ-lEB">
+                            <barButtonItem image="ViewPerPDFPageIcon" landscapeImage="ViewPerPDFPageIcon" largeContentSizeImage="ViewPerPDFPageIcon" id="w5k-IZ-lEB" userLabel="View Per PDF Page Button">
                                 <connections>
-                                    <action selector="viewPerPage:" destination="BYZ-38-t0r" id="YPF-hf-OEP"/>
+                                    <action selector="viewPerPDFPage:" destination="BYZ-38-t0r" id="YPF-hf-OEP"/>
                                 </connections>
                             </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="addGradeButton" destination="5Cc-lE-lfz" id="Qhr-nj-0kC"/>
-                        <outlet property="doneButton" destination="yI8-Ry-rqu" id="Byp-8e-Hlp"/>
+                        <outlet property="doneEditingButton" destination="yI8-Ry-rqu" id="Byp-8e-Hlp"/>
                         <outlet property="freeHandAnnotateButton" destination="Fug-N9-Ce7" id="Xfr-Rf-sPR"/>
                         <outlet property="saveButton" destination="hTB-bM-eeP" id="UEO-0p-5p5"/>
                         <outlet property="textAnnotateButton" destination="Rq2-ML-2D7" id="ZbZ-Wa-N6H"/>
-                        <outlet property="viewPerPageButton" destination="w5k-IZ-lEB" id="X8b-67-2RJ"/>
-                        <outlet property="viewPerStudentButton" destination="e5D-s3-XB0" id="iSl-qI-aYO"/>
+                        <outlet property="viewPerPDFDocumentButton" destination="e5D-s3-XB0" id="iSl-qI-aYO"/>
+                        <outlet property="viewPerPDFPageButton" destination="w5k-IZ-lEB" id="X8b-67-2RJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -111,11 +111,11 @@
     </scenes>
     <resources>
         <image name="AddGradeIcon" width="16" height="16"/>
-        <image name="DoneIcon" width="16" height="16"/>
+        <image name="DoneEditingIcon" width="16" height="16"/>
         <image name="FreeHandAnnotateIcon" width="16" height="16"/>
         <image name="SaveIcon" width="16" height="16"/>
         <image name="TextAnnotateIcon" width="16" height="16"/>
-        <image name="ViewPerPageIcon" width="16" height="16"/>
-        <image name="ViewPerStudentIcon" width="16" height="16"/>
+        <image name="ViewPerPDFDocumentIcon" width="16" height="16"/>
+        <image name="ViewPerPDFPageIcon" width="16" height="16"/>
     </resources>
 </document>
