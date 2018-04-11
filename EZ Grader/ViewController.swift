@@ -20,7 +20,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     var ezGraderMode: EZGraderMode?
     var pdfView: PDFView!
     var path: UIBezierPath!
-    var currentPDFAnnotation: PDFAnnotation!
+    var currentFreeHandPDFAnnotation: PDFAnnotation!
+    var currentFreeHandPDFAnnotationPDFPage: PDFPage!
     var numberOfPagesPerPDFDocument: Int!
     var combinedPDFDocument: PDFDocument!
     var isPerPDFPageMode: Bool!
@@ -116,7 +117,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBAction func doneEditing(_ doneEditingButton: UIBarButtonItem) {
         if self.ezGraderMode == EZGraderMode.freeHandAnnotate {
-            self.currentPDFAnnotation = nil
+            self.currentFreeHandPDFAnnotation = nil
+            self.currentFreeHandPDFAnnotationPDFPage = nil
         }
         
         self.pdfView.isUserInteractionEnabled = true
@@ -264,6 +266,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.path.move(to: touchPDFPageCoordinate)
                     
                     self.isDot = true
+                    
+                    if self.currentFreeHandPDFAnnotationPDFPage == nil {
+                        self.currentFreeHandPDFAnnotationPDFPage = pdfPageAtTouchedPosition
+                    }
                 } else if self.ezGraderMode == EZGraderMode.textAnnotate {
                     self.showAddTextAnnotationInputDialog(touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
                 } else if self.ezGraderMode == EZGraderMode.addGrade {
@@ -281,24 +287,26 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 let pdfDocumentPageIndexAtTouchedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTouchedPosition))!
                 let touchPDFPageCoordinate: CGPoint = self.pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
                 
-                self.path.addLine(to: touchPDFPageCoordinate)
-                
-                self.isDot = false
-                
-                if self.currentPDFAnnotation != nil {
-                    self.pdfView.document?.page(at: pdfDocumentPageIndexAtTouchedPosition)?.removeAnnotation(self.currentPDFAnnotation)
+                if pdfPageAtTouchedPosition == self.currentFreeHandPDFAnnotationPDFPage {
+                    self.path.addLine(to: touchPDFPageCoordinate)
+                    
+                    self.isDot = false
+                    
+                    if self.currentFreeHandPDFAnnotation != nil {
+                        self.pdfView.document?.page(at: pdfDocumentPageIndexAtTouchedPosition)?.removeAnnotation(self.currentFreeHandPDFAnnotation)
+                    }
+                    
+                    let currentAnnotationPDFBorder: PDFBorder = PDFBorder()
+                    
+                    currentAnnotationPDFBorder.lineWidth = 2.0
+                    
+                    self.currentFreeHandPDFAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: PDFAnnotationSubtype.ink, withProperties: nil)
+                    self.currentFreeHandPDFAnnotation.color = .red
+                    self.currentFreeHandPDFAnnotation.add(self.path)
+                    self.currentFreeHandPDFAnnotation.border = currentAnnotationPDFBorder
+                    
+                    self.pdfView.document?.page(at: pdfDocumentPageIndexAtTouchedPosition)?.addAnnotation(self.currentFreeHandPDFAnnotation)
                 }
-                
-                let currentAnnotationPDFBorder: PDFBorder = PDFBorder()
-                
-                currentAnnotationPDFBorder.lineWidth = 2.0
-                
-                self.currentPDFAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: PDFAnnotationSubtype.ink, withProperties: nil)
-                self.currentPDFAnnotation.color = .red
-                self.currentPDFAnnotation.add(self.path)
-                self.currentPDFAnnotation.border = currentAnnotationPDFBorder
-                
-                self.pdfView.document?.page(at: pdfDocumentPageIndexAtTouchedPosition)?.addAnnotation(self.currentPDFAnnotation)
             }
         }
     }
@@ -311,25 +319,27 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                 let pdfDocumentPageIndexAtTouchedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTouchedPosition))!
                 let touchPDFPageCoordinate: CGPoint = self.pdfView.convert(touchViewCoordinate, to: pdfPageAtTouchedPosition)
                 
-                self.path.addLine(to: CGPoint(x: touchPDFPageCoordinate.x + 1, y: touchPDFPageCoordinate.y))
-                self.path.addLine(to: CGPoint(x: touchPDFPageCoordinate.x + 1, y: touchPDFPageCoordinate.y + 1))
-                self.path.addLine(to: CGPoint(x: touchPDFPageCoordinate.x, y: touchPDFPageCoordinate.y + 1))
-                self.path.addLine(to: touchPDFPageCoordinate)
-                
-                if self.currentPDFAnnotation != nil {
-                    self.pdfView.document?.page(at: pdfDocumentPageIndexAtTouchedPosition)?.removeAnnotation(self.currentPDFAnnotation)
+                if pdfPageAtTouchedPosition == self.currentFreeHandPDFAnnotationPDFPage {
+                    self.path.addLine(to: CGPoint(x: touchPDFPageCoordinate.x + 1, y: touchPDFPageCoordinate.y))
+                    self.path.addLine(to: CGPoint(x: touchPDFPageCoordinate.x + 1, y: touchPDFPageCoordinate.y + 1))
+                    self.path.addLine(to: CGPoint(x: touchPDFPageCoordinate.x, y: touchPDFPageCoordinate.y + 1))
+                    self.path.addLine(to: touchPDFPageCoordinate)
+                    
+                    if self.currentFreeHandPDFAnnotation != nil {
+                        self.pdfView.document?.page(at: pdfDocumentPageIndexAtTouchedPosition)?.removeAnnotation(self.currentFreeHandPDFAnnotation)
+                    }
+                    
+                    let currentPDFAnnotationPDFBorder: PDFBorder = PDFBorder()
+                    
+                    currentPDFAnnotationPDFBorder.lineWidth = 2.0
+                    
+                    self.currentFreeHandPDFAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: PDFAnnotationSubtype.ink, withProperties: nil)
+                    self.currentFreeHandPDFAnnotation.color = .red
+                    self.currentFreeHandPDFAnnotation.add(self.path)
+                    self.currentFreeHandPDFAnnotation.border = currentPDFAnnotationPDFBorder
+                    
+                    self.pdfView.document?.page(at: pdfDocumentPageIndexAtTouchedPosition)?.addAnnotation(self.currentFreeHandPDFAnnotation)
                 }
-                
-                let currentPDFAnnotationPDFBorder: PDFBorder = PDFBorder()
-                
-                currentPDFAnnotationPDFBorder.lineWidth = 2.0
-                
-                self.currentPDFAnnotation = PDFAnnotation(bounds: pdfPageAtTouchedPosition.bounds(for: PDFDisplayBox.cropBox), forType: PDFAnnotationSubtype.ink, withProperties: nil)
-                self.currentPDFAnnotation.color = .red
-                self.currentPDFAnnotation.add(self.path)
-                self.currentPDFAnnotation.border = currentPDFAnnotationPDFBorder
-                
-                self.pdfView.document?.page(at: pdfDocumentPageIndexAtTouchedPosition)?.addAnnotation(self.currentPDFAnnotation)
             }
         }
     }
