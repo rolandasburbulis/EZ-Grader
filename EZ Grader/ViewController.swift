@@ -383,13 +383,13 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
             for pdfDocumentPageNumberHavingGrades: Int in pdfDocumentPageNumbersHavingGradesSorted {
                 for pdfDocumentPageQuestionNumber: Int in 1...(grades[self.pdfDocumentFileNames[0]]![pdfDocumentPageNumberHavingGrades]?.count)! {
                     if pdfDocumentPageQuestionNumber == 1 {
-                        csvFileContentsString += "Page \(pdfDocumentPageNumberHavingGrades)"
+                        csvFileContentsString += "\"Page \(pdfDocumentPageNumberHavingGrades)\""
                     }
                     
-                    csvFileContentsString += ",Question \(pdfDocumentPageQuestionNumber)"
+                    csvFileContentsString += ",\"Question \(pdfDocumentPageQuestionNumber)\""
                     
                     for pdfDocumentFileName: String in self.pdfDocumentFileNames {
-                        csvFileContentsString += ",\(grades[pdfDocumentFileName]![pdfDocumentPageNumberHavingGrades]![pdfDocumentPageQuestionNumber - 1])"
+                        csvFileContentsString += ",\"\(grades[pdfDocumentFileName]![pdfDocumentPageNumberHavingGrades]![pdfDocumentPageQuestionNumber - 1])\""
                     }
                     
                     csvFileContentsString += "\n"
@@ -425,25 +425,33 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate {
                     }
                 }
                 
-                csvFileContentsString += !pointsEarnedMissing ? ",\(pointsEarnedRunningTotal)" : ",?"
+                csvFileContentsString += !pointsEarnedMissing ? ",\"\(pointsEarnedRunningTotal)" : ",\"?"
                 
                 csvFileContentsString += " / \(maximumPointsRunningTotal) ("
                 
                 csvFileContentsString += !pointsEarnedMissing ? "\((pointsEarnedRunningTotal / maximumPointsRunningTotal * 10000).rounded(FloatingPointRoundingRule.toNearestOrEven) / 100)" : "?"
                 
-                csvFileContentsString += "%)"
+                csvFileContentsString += "%)\""
             }
             
             csvFileContentsString += "\n"
         }
         
-        let fileManager = FileManager.default
+        let fileManager: FileManager = FileManager.default
+        
         do {
-            let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
-            let fileURL = path.appendingPathComponent("CSVRec.csv")
-            try csvFileContentsString.write(to: fileURL, atomically: true, encoding: .utf8)
+            let gradesFileURL: URL = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
+
+            try csvFileContentsString.write(to: gradesFileURL.appendingPathComponent("Grades.csv"), atomically: true, encoding: .utf8)
         } catch {
-            print("error creating file")
+            // create the alert
+            let failedToSaveGradesCSVFileUIAlertController: UIAlertController = UIAlertController(title: "Error", message: "Failed to save Grades.csv file.", preferredStyle: UIAlertControllerStyle.alert)
+            
+            // add the actions (buttons)
+            failedToSaveGradesCSVFileUIAlertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+            
+            // show the alert
+            self.present(failedToSaveGradesCSVFileUIAlertController, animated: true, completion: nil)
         }
     }
     
