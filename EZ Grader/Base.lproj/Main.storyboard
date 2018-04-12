@@ -11,10 +11,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Select Folder To Grade View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="EZ_Grader" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="SelectFolderToGradeViewController" customModule="EZ_Grader" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -24,75 +24,100 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
                                 <state key="normal" title="Start Grading"/>
                                 <connections>
-                                    <action selector="startGrading:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gkb-87-gKH"/>
+                                    <segue destination="k82-2b-n8M" kind="show" identifier="showGradePDFsViewControllerSegueId" id="oOU-np-ir5"/>
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="0.90791689686572641" blue="0.79443482221705508" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="1" green="0.90791689689999999" blue="0.79443482219999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="1ad-w9-bkh" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Bec-eY-2gF"/>
                             <constraint firstItem="1ad-w9-bkh" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="QRr-XF-oo8"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" id="aur-6e-mcZ">
+                    <navigationItem key="navigationItem" id="aur-6e-mcZ"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="414" y="-42"/>
+        </scene>
+        <!--Grade PDFs View Controller-->
+        <scene sceneID="SPj-TH-MaM">
+            <objects>
+                <viewController id="k82-2b-n8M" customClass="GradePDFsViewController" customModule="EZ_Grader" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Yle-N9-hjB" customClass="GradeViewController">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JSU-1C-TOB" customClass="PDFView">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="OOg-P1-Y5i"/>
+                    </view>
+                    <navigationItem key="navigationItem" leftItemsSupplementBackButton="YES" id="ufT-CO-egP">
+                        <barButtonItem key="backBarButtonItem" title=" Back" id="StZ-nF-nI2"/>
                         <leftBarButtonItems>
-                            <barButtonItem image="FreeHandAnnotateIcon" landscapeImage="FreeHandAnnotateIcon" largeContentSizeImage="FreeHandAnnotateIcon" id="Fug-N9-Ce7">
+                            <barButtonItem image="FreeHandAnnotateIcon" landscapeImage="FreeHandAnnotateIcon" largeContentSizeImage="FreeHandAnnotateIcon" id="bna-M0-A0I">
                                 <connections>
-                                    <action selector="freeHandAnnotate:" destination="BYZ-38-t0r" id="TSi-iG-Aad"/>
+                                    <action selector="freeHandAnnotate:" destination="k82-2b-n8M" id="8Yl-OA-zlj"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem image="TextAnnotateIcon" landscapeImage="TextAnnotateIcon" largeContentSizeImage="TextAnnotateIcon" id="Rq2-ML-2D7">
+                            <barButtonItem image="TextAnnotateIcon" landscapeImage="TextAnnotateIcon" largeContentSizeImage="TextAnnotateIcon" id="7lx-ce-2hC">
                                 <connections>
-                                    <action selector="textAnnotate:" destination="BYZ-38-t0r" id="qzl-G5-dz4"/>
+                                    <action selector="textAnnotate:" destination="k82-2b-n8M" id="KpV-LO-pDl"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem image="AddGradeIcon" landscapeImage="AddGradeIcon" largeContentSizeImage="AddGradeIcon" id="5Cc-lE-lfz">
+                            <barButtonItem image="AddGradeIcon" landscapeImage="AddGradeIcon" largeContentSizeImage="AddGradeIcon" id="ldi-TE-lex">
                                 <connections>
-                                    <action selector="addGrade:" destination="BYZ-38-t0r" id="EuH-H3-idF"/>
+                                    <action selector="addGrade:" destination="k82-2b-n8M" id="ca1-TD-Xp0"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem image="SaveIcon" landscapeImage="SaveIcon" largeContentSizeImage="SaveIcon" id="hTB-bM-eeP">
+                            <barButtonItem image="SaveIcon" landscapeImage="SaveIcon" largeContentSizeImage="SaveIcon" id="PgH-l5-1hq">
                                 <connections>
-                                    <action selector="save:" destination="BYZ-38-t0r" id="zsj-0a-fIT"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem image="DoneEditingIcon" landscapeImage="DoneEditingIcon" largeContentSizeImage="DoneEditingIcon" id="yI8-Ry-rqu">
-                                <connections>
-                                    <action selector="doneEditing:" destination="BYZ-38-t0r" id="Z8z-EH-808"/>
+                                    <action selector="save:" destination="k82-2b-n8M" id="qar-jT-W3Z"/>
                                 </connections>
                             </barButtonItem>
                         </leftBarButtonItems>
                         <rightBarButtonItems>
-                            <barButtonItem image="ViewPerPDFDocumentIcon" landscapeImage="ViewPerPDFDocumentIcon" largeContentSizeImage="ViewPerPDFDocumentIcon" id="e5D-s3-XB0" userLabel="View Per PDF Document Button">
+                            <barButtonItem image="DoneEditingIcon" landscapeImage="DoneEditingIcon" largeContentSizeImage="DoneEditingIcon" id="O0y-kN-csk">
                                 <connections>
-                                    <action selector="viewPerPDFDocument:" destination="BYZ-38-t0r" id="xTT-Bl-j38"/>
+                                    <action selector="doneEditing:" destination="k82-2b-n8M" id="7Ih-M6-mrT"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem image="ViewPerPDFPageIcon" landscapeImage="ViewPerPDFPageIcon" largeContentSizeImage="ViewPerPDFPageIcon" id="w5k-IZ-lEB" userLabel="View Per PDF Page Button">
+                            <barButtonItem image="ViewPerPDFDocumentIcon" landscapeImage="ViewPerPDFDocumentIcon" largeContentSizeImage="ViewPerPDFDocumentIcon" id="lYr-ft-eft" userLabel="View Per PDF Document Button">
                                 <connections>
-                                    <action selector="viewPerPDFPage:" destination="BYZ-38-t0r" id="YPF-hf-OEP"/>
+                                    <action selector="viewPerPDFDocument:" destination="k82-2b-n8M" id="M2R-Td-OZU"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="ViewPerPDFPageIcon" landscapeImage="ViewPerPDFPageIcon" largeContentSizeImage="ViewPerPDFPageIcon" id="0YX-0w-NbB" userLabel="View Per PDF Page Button">
+                                <connections>
+                                    <action selector="viewPerPDFPage:" destination="k82-2b-n8M" id="Hgg-2D-Bux"/>
                                 </connections>
                             </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
-                        <outlet property="addGradeButton" destination="5Cc-lE-lfz" id="Qhr-nj-0kC"/>
-                        <outlet property="doneEditingButton" destination="yI8-Ry-rqu" id="Byp-8e-Hlp"/>
-                        <outlet property="freeHandAnnotateButton" destination="Fug-N9-Ce7" id="Xfr-Rf-sPR"/>
-                        <outlet property="saveButton" destination="hTB-bM-eeP" id="UEO-0p-5p5"/>
-                        <outlet property="textAnnotateButton" destination="Rq2-ML-2D7" id="ZbZ-Wa-N6H"/>
-                        <outlet property="viewPerPDFDocumentButton" destination="e5D-s3-XB0" id="iSl-qI-aYO"/>
-                        <outlet property="viewPerPDFPageButton" destination="w5k-IZ-lEB" id="X8b-67-2RJ"/>
+                        <outlet property="addGradeButton" destination="ldi-TE-lex" id="cuZ-n9-h2F"/>
+                        <outlet property="doneEditingButton" destination="O0y-kN-csk" id="l21-1t-gtC"/>
+                        <outlet property="freeHandAnnotateButton" destination="bna-M0-A0I" id="zF2-No-0gB"/>
+                        <outlet property="pdfView" destination="JSU-1C-TOB" id="nHo-WU-vfO"/>
+                        <outlet property="saveButton" destination="PgH-l5-1hq" id="iad-RO-gpv"/>
+                        <outlet property="textAnnotateButton" destination="7lx-ce-2hC" id="eDo-8a-QdI"/>
+                        <outlet property="viewPerPDFDocumentButton" destination="lYr-ft-eft" id="OYZ-9E-B5v"/>
+                        <outlet property="viewPerPDFPageButton" destination="0YX-0w-NbB" id="aZt-5l-tgg"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ALa-dG-wxI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="364" y="31.934032983508249"/>
+            <point key="canvasLocation" x="1162" y="-43"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="T7c-NZ-Toz">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EI5-K6-jlq" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gW4-6B-OM6" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="sZG-TY-4IG">
@@ -104,9 +129,8 @@
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="CsA-a9-EJ5"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="EI5-K6-jlq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-347.19999999999999" y="-41.379310344827587"/>
+            <point key="canvasLocation" x="-316" y="-45"/>
         </scene>
     </scenes>
     <resources>
