@@ -11,6 +11,7 @@
 		38D9EBF4207DC102000CBE89 /* avg.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 38D9EBF0207DC102000CBE89 /* avg.pdf */; };
 		38D9EBF5207DC102000CBE89 /* poor.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 38D9EBF1207DC102000CBE89 /* poor.pdf */; };
 		38D9EBFB207F3A37000CBE89 /* GradePDFsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D9EBFA207F3A37000CBE89 /* GradePDFsViewController.swift */; };
+		38D9EC00207F5669000CBE89 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D9EBFF207F5669000CBE89 /* ViewController.swift */; };
 		38E8A1D3206B8D55003ABA99 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38E8A1D2206B8D55003ABA99 /* Launch Screen.storyboard */; };
 		84CACB062020310F008D8AB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB052020310F008D8AB1 /* AppDelegate.swift */; };
 		84CACB082020310F008D8AB1 /* SelectFolderToGradeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CACB072020310F008D8AB1 /* SelectFolderToGradeViewController.swift */; };
@@ -24,6 +25,7 @@
 		38D9EBF0207DC102000CBE89 /* avg.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = avg.pdf; sourceTree = "<group>"; };
 		38D9EBF1207DC102000CBE89 /* poor.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = poor.pdf; sourceTree = "<group>"; };
 		38D9EBFA207F3A37000CBE89 /* GradePDFsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradePDFsViewController.swift; sourceTree = "<group>"; };
+		38D9EBFF207F5669000CBE89 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		38E8A1D2206B8D55003ABA99 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		84CACB022020310F008D8AB1 /* EZ Grader.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EZ Grader.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84CACB052020310F008D8AB1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 				38E8A1D2206B8D55003ABA99 /* Launch Screen.storyboard */,
 				84CACB0F2020310F008D8AB1 /* Assets.xcassets */,
 				84CACB142020310F008D8AB1 /* Info.plist */,
+				38D9EBFF207F5669000CBE89 /* ViewController.swift */,
 				84CACB0C2020310F008D8AB1 /* EZ_Grader.xcdatamodeld */,
 			);
 			path = "EZ Grader";
@@ -170,6 +173,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38D9EC00207F5669000CBE89 /* ViewController.swift in Sources */,
 				84CACB082020310F008D8AB1 /* SelectFolderToGradeViewController.swift in Sources */,
 				84CACB0E2020310F008D8AB1 /* EZ_Grader.xcdatamodeld in Sources */,
 				84CACB062020310F008D8AB1 /* AppDelegate.swift in Sources */,
