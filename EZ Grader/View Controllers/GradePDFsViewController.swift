@@ -248,10 +248,15 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.leftCurrentPageWhenFreeHandAnnotating = false
         
-        self.navigationController?.isNavigationBarHidden = false
         self.navigationItem.backBarButtonItem?.title = ""
         
         self.updateNavigationBar()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     override func didReceiveMemoryWarning() {
