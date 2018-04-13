@@ -52,6 +52,10 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JSU-1C-TOB" customClass="PDFView">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="W9v-S8-OW3" appends="YES" id="JlN-u1-Cac"/>
+                                </connections>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -111,13 +115,17 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ALa-dG-wxI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="W9v-S8-OW3">
+                    <connections>
+                        <action selector="tap:" destination="k82-2b-n8M" id="El9-Fk-Mek"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1162" y="-43"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="T7c-NZ-Toz">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="EI5-K6-jlq" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gW4-6B-OM6" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="sZG-TY-4IG">
@@ -129,6 +137,7 @@
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="CsA-a9-EJ5"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EI5-K6-jlq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-316" y="-45"/>
         </scene>
