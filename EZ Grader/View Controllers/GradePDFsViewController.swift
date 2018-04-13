@@ -40,7 +40,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet var doneEditingButton: UIBarButtonItem!
     
     //MARK: Actions
-    @IBAction func freeHandAnnotate(_ freeHandAnnotateButton: UIBarButtonItem) {
+    @IBAction func freeHandAnnotate(_ freeHandAnnotateButton: UIBarButtonItem) -> Void {
         self.path = UIBezierPath()
         
         self.pdfView.isUserInteractionEnabled = false
@@ -50,7 +50,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.updateNavigationBar()
     }
     
-    @IBAction func textAnnotate(_ textAnnotateButton: UIBarButtonItem) {
+    @IBAction func textAnnotate(_ textAnnotateButton: UIBarButtonItem) -> Void {
         self.pdfView.isUserInteractionEnabled = false
         
         self.ezGraderMode = EZGraderMode.textAnnotate
@@ -58,7 +58,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.updateNavigationBar()
     }
     
-    @IBAction func addGrade(_ addGradeButton: UIBarButtonItem) {
+    @IBAction func addGrade(_ addGradeButton: UIBarButtonItem) -> Void {
         self.pdfView.isUserInteractionEnabled = false
         
         self.ezGraderMode = EZGraderMode.addGrade
@@ -66,7 +66,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.updateNavigationBar()
     }
     
-    @IBAction func save(_ saveButton: UIBarButtonItem) {
+    @IBAction func save(_ saveButton: UIBarButtonItem) -> Void {
         let documentsPath: String = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
         
         //Maps a PDF document file name to a PDF page number, which in turns maps to an array containing grades on the PDF page identified
@@ -116,7 +116,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.writeOutGradesAsCSV(grades: allPDFDocumentGrades)
     }
     
-    @IBAction func viewPerPDFPage(_ viewPerPDFPageButton: UIBarButtonItem) {
+    @IBAction func viewPerPDFPage(_ viewPerPDFPageButton: UIBarButtonItem) -> Void {
         if self.isPerPDFPageMode == true {
             return
         }
@@ -145,7 +145,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.pdfView.go(to: currentPDFPage)
     }
     
-    @IBAction func viewPerPDFDocument(_ viewPerPDFDocumentButton: UIBarButtonItem) {
+    @IBAction func viewPerPDFDocument(_ viewPerPDFDocumentButton: UIBarButtonItem) -> Void {
         if self.isPerPDFPageMode == false {
             return
         }
@@ -174,7 +174,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.pdfView.go(to: currentPDFPage)
     }
     
-    @IBAction func doneEditing(_ doneEditingButton: UIBarButtonItem) {
+    @IBAction func doneEditing(_ doneEditingButton: UIBarButtonItem) -> Void {
         if self.ezGraderMode == EZGraderMode.freeHandAnnotate {
             self.currentFreeHandPDFAnnotation = nil
             self.currentFreeHandPDFAnnotationPDFPage = nil
@@ -188,27 +188,26 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.updateNavigationBar()
     }
     
-    @IBAction func tap(_ uiTapGestureRecognizer: UITapGestureRecognizer) {
+    @IBAction func tap(_ uiTapGestureRecognizer: UITapGestureRecognizer) -> Void {
         if self.ezGraderMode == EZGraderMode.viewPDFDocuments {
             if uiTapGestureRecognizer.state == UIGestureRecognizerState.recognized
             {
                 let tapViewCoordinate: CGPoint = uiTapGestureRecognizer.location(in: self.pdfView)
                 let pdfPageAtTappedPosition: PDFPage = self.pdfView.page(for: tapViewCoordinate, nearest: true)!
-                let pdfDocumentPageIndexAtTappedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTappedPosition))!
                 let tapPDFPageCoordinate: CGPoint = self.pdfView.convert(tapViewCoordinate, to: pdfPageAtTappedPosition)
                 
                 let tappedPDFAnnotation: PDFAnnotation? = pdfPageAtTappedPosition.annotation(at: tapPDFPageCoordinate)
                 
                 if tappedPDFAnnotation != nil {
-                    tappedPDFAnnotation?.contents = "Changed"
-                } else {
-                    print(false)
+                    let pdfDocumentPageIndexAtTappedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTappedPosition))!
+                    
+                    self.showGradeInputDialog(isAdd: false, touchPDFPageCoordinate: tapPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTappedPosition)
                 }
             }
         }
     }
     
-    override func viewDidLoad() {
+    override func viewDidLoad() -> Void {
         super.viewDidLoad()
         
         let pdfDocumentURLs: [URL] = Bundle.main.urls(forResourcesWithExtension: "pdf", subdirectory: nil)!
@@ -253,17 +252,17 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.updateNavigationBar()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) -> Void {
         super.viewWillAppear(true)
         
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
-    override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning() -> Void {
         super.didReceiveMemoryWarning()
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) -> Void {
         if self.ezGraderMode == EZGraderMode.freeHandAnnotate || self.ezGraderMode == EZGraderMode.textAnnotate || self.ezGraderMode == EZGraderMode.addGrade {
             if let touch: UITouch = touches.first {
                 let touchViewCoordinate: CGPoint = touch.location(in: self.pdfView)
@@ -282,15 +281,15 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
                         self.isDot = true
                     }
                 } else if self.ezGraderMode == EZGraderMode.textAnnotate {
-                    self.showAddTextAnnotationInputDialog(touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
+                    self.showTextAnnotationInputDialog(isAdd: true, touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
                 } else if self.ezGraderMode == EZGraderMode.addGrade {
-                    self.showAddGradeInputDialog(touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
+                    self.showGradeInputDialog(isAdd: true, touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
                 }
             }
         }
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) -> Void {
         if self.ezGraderMode == EZGraderMode.freeHandAnnotate {
             if let touch: UITouch = touches.first {
                 let touchViewCoordinate: CGPoint = touch.location(in: self.pdfView)
@@ -335,7 +334,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) -> Void {
         if self.ezGraderMode == EZGraderMode.freeHandAnnotate && self.isDot {
             if let touch: UITouch = touches.first {
                 let touchViewCoordinate: CGPoint = touch.location(in: self.pdfView)
@@ -480,10 +479,10 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    private func showAddTextAnnotationInputDialog(touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
-        let addTextAnnotationUIAlertController = UIAlertController(title: "Add Text Annotation", message: "", preferredStyle: UIAlertControllerStyle.alert)
+    private func showTextAnnotationInputDialog(isAdd: Bool, touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
+        let addTextAnnotationUIAlertController = UIAlertController(title: isAdd ? "Add Text Annotation" : "Edit Text Annotation", message: "", preferredStyle: UIAlertControllerStyle.alert)
         
-        let addTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Add Text Annotation", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
+        let addTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Submit", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
             let enteredText: String = (addTextAnnotationUIAlertController.textFields?[0].text)!
             let enteredTextSize: CGSize = self.getTextSize(text: enteredText + "  ")
             
@@ -501,7 +500,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         let cancelAddTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (alert: UIAlertAction!) in }
         
-        addTextAnnotationUIAlertController.addTextField { (textField) in
+        addTextAnnotationUIAlertController.addTextField { (textField: UITextField) in
             textField.placeholder = "Text Annotation"
         }
         
@@ -511,23 +510,27 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.present(addTextAnnotationUIAlertController, animated: true, completion: nil)
     }
     
-    private func showAddGradeInputDialog(touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
-        let addGradeUIAlertController = UIAlertController(title: "Add Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
+    private func showGradeInputDialog(isAdd: Bool, touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
+        let addGradeUIAlertController = UIAlertController(title: isAdd ? "Add Grade" : "Edit Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
         
-        let addGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Add Grade", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
+        let addGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Submit", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
             self.addGradeToAllPDFDocuments(pointsEarned: (addGradeUIAlertController.textFields?[0].text)!, maximumPoints: (addGradeUIAlertController.textFields?[1].text)!, touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
         }
         
         let cancelAddGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (alert: UIAlertAction!) in }
         
-        addGradeUIAlertController.addTextField { (textField) in
+        addGradeUIAlertController.addTextField { (textField: UITextField) in
             textField.placeholder = "Points Earned"
             textField.keyboardType = UIKeyboardType.decimalPad
         }
         
-        addGradeUIAlertController.addTextField { (textField) in
+        addGradeUIAlertController.addTextField { (textField: UITextField) in
             textField.placeholder = "Maximum Points"
             textField.keyboardType = UIKeyboardType.decimalPad
+            
+            if !isAdd {
+                textField.isEnabled = false
+            }
         }
         
         addGradeUIAlertController.addAction(addGradeUIAlertAction)

@@ -39,17 +39,17 @@ class SelectFolderToGradeViewController: UIViewController {
         return true
     }
 
-    override func viewDidLoad() {
+    override func viewDidLoad() -> Void {
         super.viewDidLoad()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) -> Void {
         super.viewWillAppear(true)
         
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
 
-    override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning() -> Void {
         super.didReceiveMemoryWarning()
     }
 }
