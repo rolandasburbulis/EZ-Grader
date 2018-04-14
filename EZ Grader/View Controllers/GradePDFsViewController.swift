@@ -395,7 +395,10 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func writeOutGradesAsCSV(grades: [String: [Int: [String]]]) -> Void {
-        var csvFileContentsString: String = "Page Number,Question Number"
+        var maximumPointsRunningTotal: Double
+        var pdfDocumentPageQuestionPointsEarned: String
+        
+        var csvFileContentsString: String = "-,-"
         
         for pdfDocumentFileName: String in self.pdfDocumentFileNames {
             csvFileContentsString += ",\"\(pdfDocumentFileName)\""
@@ -406,9 +409,27 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         if grades.keys.count == 0 {
             csvFileContentsString += "No grades have been entered yet.\n"
         } else {
+            csvFileContentsString += "MAX POINTS,-"
+            
             let pdfDocumentPageNumbersHavingGradesSorted: [Int] = grades[self.pdfDocumentFileNames[0]]!.keys.sorted(by: { (pdfDocumentPage1Number: Int, pdfDocumentPage2Number: Int) -> Bool in
                 return pdfDocumentPage1Number < pdfDocumentPage2Number
             })
+            
+            for pdfDocumentFileName: String in self.pdfDocumentFileNames {
+                maximumPointsRunningTotal = 0
+                
+                for pdfDocumentPageNumberHavingGrades: Int in pdfDocumentPageNumbersHavingGradesSorted {
+                    for grade: String in grades[pdfDocumentFileName]![pdfDocumentPageNumberHavingGrades]! {
+                        maximumPointsRunningTotal += Double(grade.components(separatedBy: "/").map({ (gradeComponent: String) -> String in
+                            return gradeComponent.trimmingCharacters(in: CharacterSet.whitespaces)
+                        })[1])!
+                    }
+                }
+
+                csvFileContentsString += ",\"\(maximumPointsRunningTotal)\""
+            }
+            
+            csvFileContentsString += "\n"
             
             for pdfDocumentPageNumberHavingGrades: Int in pdfDocumentPageNumbersHavingGradesSorted {
                 for pdfDocumentPageQuestionNumber: Int in 1...(grades[self.pdfDocumentFileNames[0]]![pdfDocumentPageNumberHavingGrades]?.count)! {
@@ -419,52 +440,16 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
                     csvFileContentsString += ",\"Question \(pdfDocumentPageQuestionNumber)\""
                     
                     for pdfDocumentFileName: String in self.pdfDocumentFileNames {
-                        csvFileContentsString += ",\"\(grades[pdfDocumentFileName]![pdfDocumentPageNumberHavingGrades]![pdfDocumentPageQuestionNumber - 1])\""
+                        pdfDocumentPageQuestionPointsEarned = grades[pdfDocumentFileName]![pdfDocumentPageNumberHavingGrades]![pdfDocumentPageQuestionNumber - 1].components(separatedBy: "/").map({ (gradeComponent: String) -> String in
+                            return gradeComponent.trimmingCharacters(in: CharacterSet.whitespaces)
+                        })[0]
+                        
+                        csvFileContentsString += ",\"\(pdfDocumentPageQuestionPointsEarned)\""
                     }
                     
                     csvFileContentsString += "\n"
                 }
             }
-            
-            csvFileContentsString += "TOTAL,-"
-            
-            var pointsEarnedMissing: Bool = false
-            var pointsEarnedRunningTotal: Double
-            var maximumPointsRunningTotal: Double
-            var gradeComponentsTrimmedWhitespace: [String]
-            
-            for pdfDocumentFileName: String in self.pdfDocumentFileNames {
-                pointsEarnedRunningTotal = 0
-                maximumPointsRunningTotal = 0
-                
-                for pdfDocumentPageNumberHavingGrades: Int in pdfDocumentPageNumbersHavingGradesSorted {
-                    for grade: String in grades[pdfDocumentFileName]![pdfDocumentPageNumberHavingGrades]! {
-                        gradeComponentsTrimmedWhitespace = grade.components(separatedBy: "/").map({ (gradeComponent: String) -> String in
-                            return gradeComponent.trimmingCharacters(in: CharacterSet.whitespaces)
-                        })
-                        
-                        if !pointsEarnedMissing {
-                            if let pointsEarned: Double = Double(gradeComponentsTrimmedWhitespace[0]) {
-                                pointsEarnedRunningTotal += pointsEarned
-                            } else {
-                                pointsEarnedMissing = true
-                            }
-                        }
-                        
-                        maximumPointsRunningTotal += Double(gradeComponentsTrimmedWhitespace[1])!
-                    }
-                }
-                
-                csvFileContentsString += !pointsEarnedMissing ? ",\"\(pointsEarnedRunningTotal)" : ",\"?"
-                
-                csvFileContentsString += " / \(maximumPointsRunningTotal) ("
-                
-                csvFileContentsString += !pointsEarnedMissing ? "\((pointsEarnedRunningTotal / maximumPointsRunningTotal * 10000).rounded(FloatingPointRoundingRule.toNearestOrEven) / 100)" : "?"
-                
-                csvFileContentsString += "%)\""
-            }
-            
-            csvFileContentsString += "\n"
         }
         
         let fileManager: FileManager = FileManager.default
@@ -592,7 +577,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
             maximumPointsTextField.placeholder = "Maximum Points"
             maximumPointsTextField.keyboardType = UIKeyboardType.decimalPad
             maximumPointsTextField.isEnabled = false
-            maximumPointsTextField.backgroundColor = UIColor.gray
+            maximumPointsTextField.textColor = UIColor.gray
             maximumPointsTextField.text = gradeComponents[1]
         }
         
