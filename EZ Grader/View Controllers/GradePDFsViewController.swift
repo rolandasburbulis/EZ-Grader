@@ -190,18 +190,24 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBAction func tap(_ uiTapGestureRecognizer: UITapGestureRecognizer) -> Void {
         if self.ezGraderMode == EZGraderMode.viewPDFDocuments {
-            if uiTapGestureRecognizer.state == UIGestureRecognizerState.recognized
-            {
+            if uiTapGestureRecognizer.state == UIGestureRecognizerState.recognized {
                 let tapViewCoordinate: CGPoint = uiTapGestureRecognizer.location(in: self.pdfView)
                 let pdfPageAtTappedPosition: PDFPage = self.pdfView.page(for: tapViewCoordinate, nearest: true)!
                 let tapPDFPageCoordinate: CGPoint = self.pdfView.convert(tapViewCoordinate, to: pdfPageAtTappedPosition)
                 
-                let tappedPDFAnnotation: PDFAnnotation? = pdfPageAtTappedPosition.annotation(at: tapPDFPageCoordinate)
+                //Filter annotations on the page to only return tapped freetext PDF annotations
+                let tappedFreeTextPDFAnnotations: [PDFAnnotation] = pdfPageAtTappedPosition.annotations.filter({ (pdfAnnotation: PDFAnnotation) -> Bool in
+                    return pdfAnnotation.type! == PDFAnnotationSubtype.freeText.rawValue.replacingOccurrences(of: "/", with: "") && pdfAnnotation.bounds.contains(tapPDFPageCoordinate)
+                })
                 
-                if tappedPDFAnnotation != nil {
-                    let pdfDocumentPageIndexAtTappedPosition: Int = (self.pdfView.document?.index(for: pdfPageAtTappedPosition))!
-                    
-                    self.showGradeInputDialog(isAdd: false, touchPDFPageCoordinate: tapPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTappedPosition)
+                if tappedFreeTextPDFAnnotations.count > 0 {
+                    let topTappedFreeTextPDFAnnotation: PDFAnnotation = tappedFreeTextPDFAnnotations[tappedFreeTextPDFAnnotations.count - 1]
+                
+                    if topTappedFreeTextPDFAnnotation.annotationKeyValues[PDFAnnotationKey.widgetCaption] as? String == "Text Annotation" {
+                        self.showEditTextAnnotationInputDialog(textAnnotationToEdit: topTappedFreeTextPDFAnnotation)
+                    } else {
+                        self.showEditGradeInputDialog(gradeAnnotationToEdit: topTappedFreeTextPDFAnnotation)
+                    }
                 }
             }
         }
@@ -281,9 +287,9 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
                         self.isDot = true
                     }
                 } else if self.ezGraderMode == EZGraderMode.textAnnotate {
-                    self.showTextAnnotationInputDialog(isAdd: true, touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
+                    self.showAddTextAnnotationInputDialog(touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
                 } else if self.ezGraderMode == EZGraderMode.addGrade {
-                    self.showGradeInputDialog(isAdd: true, touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
+                    self.showAddGradeInputDialog(touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
                 }
             }
         }
@@ -479,8 +485,8 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         }
     }
     
-    private func showTextAnnotationInputDialog(isAdd: Bool, touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
-        let addTextAnnotationUIAlertController = UIAlertController(title: isAdd ? "Add Text Annotation" : "Edit Text Annotation", message: "", preferredStyle: UIAlertControllerStyle.alert)
+    private func showAddTextAnnotationInputDialog(touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
+        let addTextAnnotationUIAlertController = UIAlertController(title: "Add Text Annotation", message: "", preferredStyle: UIAlertControllerStyle.alert)
         
         let addTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Submit", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
             let enteredText: String = (addTextAnnotationUIAlertController.textFields?[0].text)!
@@ -500,8 +506,8 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         let cancelAddTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (alert: UIAlertAction!) in }
         
-        addTextAnnotationUIAlertController.addTextField { (textField: UITextField) in
-            textField.placeholder = "Text Annotation"
+        addTextAnnotationUIAlertController.addTextField { (textAnnotationTextField: UITextField) in
+            textAnnotationTextField.placeholder = "Text Annotation"
         }
         
         addTextAnnotationUIAlertController.addAction(addTextAnnotationUIAlertAction)
@@ -510,8 +516,32 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.present(addTextAnnotationUIAlertController, animated: true, completion: nil)
     }
     
-    private func showGradeInputDialog(isAdd: Bool, touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
-        let addGradeUIAlertController = UIAlertController(title: isAdd ? "Add Grade" : "Edit Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
+    private func showEditTextAnnotationInputDialog(textAnnotationToEdit: PDFAnnotation) -> Void {
+        let editTextAnnotationUIAlertController = UIAlertController(title: "Edit Text Annotation", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        
+        let editTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Submit", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
+            let enteredText: String = (editTextAnnotationUIAlertController.textFields?[0].text)!
+            let enteredTextSize: CGSize = self.getTextSize(text: enteredText + "  ")
+            
+            textAnnotationToEdit.bounds.size = CGSize(width: enteredTextSize.height, height: enteredTextSize.width)
+            textAnnotationToEdit.contents = enteredText
+        }
+        
+        let cancelEditTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (alert: UIAlertAction!) in }
+        
+        editTextAnnotationUIAlertController.addTextField { (textAnnotationTextField: UITextField) in
+            textAnnotationTextField.placeholder = "Text Annotation"
+            textAnnotationTextField.text = textAnnotationToEdit.contents
+        }
+        
+        editTextAnnotationUIAlertController.addAction(editTextAnnotationUIAlertAction)
+        editTextAnnotationUIAlertController.addAction(cancelEditTextAnnotationUIAlertAction)
+        
+        self.present(editTextAnnotationUIAlertController, animated: true, completion: nil)
+    }
+    
+    private func showAddGradeInputDialog(touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
+        let addGradeUIAlertController = UIAlertController(title: "Add Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
         
         let addGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Submit", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
             self.addGradeToAllPDFDocuments(pointsEarned: (addGradeUIAlertController.textFields?[0].text)!, maximumPoints: (addGradeUIAlertController.textFields?[1].text)!, touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
@@ -519,24 +549,57 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         let cancelAddGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (alert: UIAlertAction!) in }
         
-        addGradeUIAlertController.addTextField { (textField: UITextField) in
-            textField.placeholder = "Points Earned"
-            textField.keyboardType = UIKeyboardType.decimalPad
+        addGradeUIAlertController.addTextField { (pointsEarnedTextField: UITextField) in
+            pointsEarnedTextField.placeholder = "Points Earned"
+            pointsEarnedTextField.keyboardType = UIKeyboardType.decimalPad
         }
         
-        addGradeUIAlertController.addTextField { (textField: UITextField) in
-            textField.placeholder = "Maximum Points"
-            textField.keyboardType = UIKeyboardType.decimalPad
-            
-            if !isAdd {
-                textField.isEnabled = false
-            }
+        addGradeUIAlertController.addTextField { (maximumPointsTextField: UITextField) in
+            maximumPointsTextField.placeholder = "Maximum Points"
+            maximumPointsTextField.keyboardType = UIKeyboardType.decimalPad
         }
         
         addGradeUIAlertController.addAction(addGradeUIAlertAction)
         addGradeUIAlertController.addAction(cancelAddGradeUIAlertAction)
         
         self.present(addGradeUIAlertController, animated: true, completion: nil)
+    }
+    
+    private func showEditGradeInputDialog(gradeAnnotationToEdit: PDFAnnotation) -> Void {
+        let editGradeUIAlertController = UIAlertController(title: "Edit Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        
+        let editGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Submit", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
+            let gradeText: String = (editGradeUIAlertController.textFields?[0].text)! + " / " + (editGradeUIAlertController.textFields?[1].text)!
+            let gradeTextSize: CGSize = self.getTextSize(text: gradeText + "  ")
+            
+            gradeAnnotationToEdit.bounds.size = CGSize(width: gradeTextSize.height, height: gradeTextSize.width)
+            gradeAnnotationToEdit.contents = gradeText
+        }
+        
+        let cancelEditGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (alert: UIAlertAction!) in }
+        
+        let gradeComponents: [String] = gradeAnnotationToEdit.contents!.components(separatedBy: "/").map({ (gradeComponent: String) -> String in
+            return gradeComponent.trimmingCharacters(in: CharacterSet.whitespaces)
+        })
+        
+        editGradeUIAlertController.addTextField { (pointsEarnedTextField: UITextField) in
+            pointsEarnedTextField.placeholder = "Points Earned"
+            pointsEarnedTextField.keyboardType = UIKeyboardType.decimalPad
+            pointsEarnedTextField.text = gradeComponents[0]
+        }
+        
+        editGradeUIAlertController.addTextField { (maximumPointsTextField: UITextField) in
+            maximumPointsTextField.placeholder = "Maximum Points"
+            maximumPointsTextField.keyboardType = UIKeyboardType.decimalPad
+            maximumPointsTextField.isEnabled = false
+            maximumPointsTextField.backgroundColor = UIColor.gray
+            maximumPointsTextField.text = gradeComponents[1]
+        }
+        
+        editGradeUIAlertController.addAction(editGradeUIAlertAction)
+        editGradeUIAlertController.addAction(cancelEditGradeUIAlertAction)
+        
+        self.present(editGradeUIAlertController, animated: true, completion: nil)
     }
     
     private func addGradeToAllPDFDocuments(pointsEarned: String, maximumPoints: String, touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
