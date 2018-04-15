@@ -242,6 +242,8 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() -> Void {
         super.viewDidLoad()
         
+        self.startActivityIndicator()
+        
         let pdfDocumentURLs: [URL] = Bundle.main.urls(forResourcesWithExtension: "pdf", subdirectory: nil)!
         
         for pdfDocumentURL: URL in pdfDocumentURLs {
@@ -255,29 +257,14 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.isPerPDFPageMode = true
         self.combinedPDFDocument = PDFDocument()
         
-        for pdfDocumentPageIndex: Int in 0...self.numberOfPagesPerPDFDocument - 1 {
-            for pdfDocumentURL: URL in pdfDocumentURLs {
-                let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentURL)!.page(at: pdfDocumentPageIndex))!
-                
-                self.combinedPDFDocument.insert(pdfPage, at: self.combinedPDFDocument.pageCount)
-            }
-        }
-        
         self.pdfView.displayMode = PDFDisplayMode.singlePageContinuous
         self.pdfView.autoScales = true
         self.pdfView.frame = self.view.bounds
         self.pdfView.autoresizingMask = [UIViewAutoresizing.flexibleWidth, UIViewAutoresizing.flexibleHeight]
-        self.pdfView.document = self.combinedPDFDocument
         self.pdfView.isUserInteractionEnabled = true
-        
-        self.view.addSubview(self.pdfView)
         
         self.overlayView.frame = self.view.bounds
         self.overlayView.autoresizingMask = [UIViewAutoresizing.flexibleWidth, UIViewAutoresizing.flexibleHeight]
-        
-        self.overlayView.addSubview(self.uiActivityIndicatorView)
-        
-        self.pdfView.addSubview(self.overlayView)
         
         self.ezGraderMode = EZGraderMode.viewPDFDocuments
         
@@ -286,11 +273,25 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.leftCurrentPageWhenFreeHandAnnotating = false
         
-        navigationController?.setNavigationBarHidden(false, animated: true)
-        
-        self.navigationItem.backBarButtonItem?.title = ""
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         
         self.updateNavigationBar()
+        
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            for pdfDocumentPageIndex: Int in 0...self.numberOfPagesPerPDFDocument - 1 {
+                for pdfDocumentURL: URL in pdfDocumentURLs {
+                    let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentURL)!.page(at: pdfDocumentPageIndex))!
+                    
+                    self.combinedPDFDocument.insert(pdfPage, at: self.combinedPDFDocument.pageCount)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.stopActivityIndicator()
+                
+                self.pdfView.document = self.combinedPDFDocument
+            }
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) -> Void {

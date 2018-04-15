@@ -42,6 +42,6 @@ class SelectFolderToGradeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) -> Void {
         super.viewWillAppear(true)
         
-        navigationController?.setNavigationBarHidden(true, animated: true)
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
 }
