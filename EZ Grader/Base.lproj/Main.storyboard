@@ -41,11 +41,11 @@
             </objects>
             <point key="canvasLocation" x="414" y="-42"/>
         </scene>
-        <!--Grade PDFs View Controller-->
+        <!--GradePD Fs View Controller-->
         <scene sceneID="SPj-TH-MaM">
             <objects>
                 <viewController id="k82-2b-n8M" customClass="GradePDFsViewController" customModule="EZ_Grader" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Yle-N9-hjB" customClass="GradeViewController">
+                    <view key="view" contentMode="scaleToFill" id="Yle-N9-hjB">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -57,8 +57,19 @@
                                     <outletCollection property="gestureRecognizers" destination="W9v-S8-OW3" appends="YES" id="JlN-u1-Cac"/>
                                 </connections>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iN7-lW-wnh">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="NFS-Ny-Gnc">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
+                            </activityIndicatorView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="1" green="0.90791689689999999" blue="0.79443482219999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="NFS-Ny-Gnc" firstAttribute="centerY" secondItem="Yle-N9-hjB" secondAttribute="centerY" id="rg0-Me-BPS"/>
+                            <constraint firstItem="NFS-Ny-Gnc" firstAttribute="centerX" secondItem="Yle-N9-hjB" secondAttribute="centerX" id="uvx-Mg-V1B"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="OOg-P1-Y5i"/>
                     </view>
                     <navigationItem key="navigationItem" leftItemsSupplementBackButton="YES" id="ufT-CO-egP">
@@ -107,9 +118,11 @@
                         <outlet property="addGradeButton" destination="ldi-TE-lex" id="cuZ-n9-h2F"/>
                         <outlet property="doneEditingButton" destination="O0y-kN-csk" id="l21-1t-gtC"/>
                         <outlet property="freeHandAnnotateButton" destination="bna-M0-A0I" id="zF2-No-0gB"/>
+                        <outlet property="overlayView" destination="iN7-lW-wnh" id="kZe-fz-FmQ"/>
                         <outlet property="pdfView" destination="JSU-1C-TOB" id="nHo-WU-vfO"/>
                         <outlet property="saveButton" destination="PgH-l5-1hq" id="iad-RO-gpv"/>
                         <outlet property="textAnnotateButton" destination="7lx-ce-2hC" id="eDo-8a-QdI"/>
+                        <outlet property="uiActivityIndicatorView" destination="NFS-Ny-Gnc" id="QXZ-4T-fCL"/>
                         <outlet property="viewPerPDFDocumentButton" destination="lYr-ft-eft" id="OYZ-9E-B5v"/>
                         <outlet property="viewPerPDFPageButton" destination="0YX-0w-NbB" id="aZt-5l-tgg"/>
                     </connections>
@@ -121,7 +134,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1162" y="-43"/>
+            <point key="canvasLocation" x="1160.8" y="-43.628185907046479"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="T7c-NZ-Toz">

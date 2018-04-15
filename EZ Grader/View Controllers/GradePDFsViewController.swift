@@ -31,6 +31,8 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     
     //MARK: Properties
     @IBOutlet weak var pdfView: PDFView!
+    @IBOutlet var overlayView: UIView!
+    @IBOutlet var uiActivityIndicatorView: UIActivityIndicatorView!
     @IBOutlet var freeHandAnnotateButton: UIBarButtonItem!
     @IBOutlet var textAnnotateButton: UIBarButtonItem!
     @IBOutlet var addGradeButton: UIBarButtonItem!
@@ -67,59 +69,69 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @IBAction func save(_ saveButton: UIBarButtonItem) -> Void {
-        let documentsPath: String = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
+        self.startActivityIndicator()
         
-        //Maps a PDF document file name to a PDF page number, which in turns maps to an array containing grades on the PDF page identified
-        //by the PDF page index sorted top to bottom as they appear on the page
-        var allPDFDocumentGrades: [String: [Int: [String]]] = [:]
-        
-        var pdfPage: PDFPage
-        
-        var pdfDocumentToWrite: PDFDocument = PDFDocument()
-        
-        if self.isPerPDFPageMode {
-            let numberOfPDFDocuments: Int = self.combinedPDFDocument.pageCount / self.numberOfPagesPerPDFDocument
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            let documentsPath: String = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
             
-            for pdfDocumentIndex: Int in 0...numberOfPDFDocuments - 1 {
-                for pdfDocumentPageIndex: Int in 0...self.numberOfPagesPerPDFDocument - 1 {
-                    pdfPage = self.combinedPDFDocument.page(at: (pdfDocumentPageIndex * numberOfPDFDocuments + pdfDocumentIndex))!
-                    
-                    self.updateGradesForPDFDocumentPage(pdfPage: pdfPage, allPDFDocumentGrades: &allPDFDocumentGrades, pdfDocumentIndex: pdfDocumentIndex, pdfDocumentPageIndex: pdfDocumentPageIndex)
-                    
-                    pdfDocumentToWrite.insert(pdfPage, at: pdfDocumentToWrite.pageCount)
-                }
-                
-                pdfDocumentToWrite.write(toFile: "\(documentsPath)/\(self.pdfDocumentFileNames[pdfDocumentIndex]).pdf")
-                
-                pdfDocumentToWrite = PDFDocument()
-            }
-        } else {
-            var pdfDocumentIndex: Int
+            //Maps a PDF document file name to a PDF page number, which in turns maps to an array containing grades on the PDF page identified
+            //by the PDF page index sorted top to bottom as they appear on the page
+            var allPDFDocumentGrades: [String: [Int: [String]]] = [:]
             
-            for combinedPDFDocumentPageIndex: Int in 0...self.combinedPDFDocument.pageCount - 1 {
-                pdfPage = self.combinedPDFDocument.page(at: combinedPDFDocumentPageIndex)!
+            var pdfPage: PDFPage
+            
+            var pdfDocumentToWrite: PDFDocument = PDFDocument()
+            
+            if self.isPerPDFPageMode {
+                let numberOfPDFDocuments: Int = self.combinedPDFDocument.pageCount / self.numberOfPagesPerPDFDocument
                 
-                pdfDocumentIndex = combinedPDFDocumentPageIndex / self.numberOfPagesPerPDFDocument
-                
-                self.updateGradesForPDFDocumentPage(pdfPage: pdfPage, allPDFDocumentGrades: &allPDFDocumentGrades, pdfDocumentIndex: pdfDocumentIndex, pdfDocumentPageIndex: combinedPDFDocumentPageIndex % self.numberOfPagesPerPDFDocument)
-                
-                pdfDocumentToWrite.insert(pdfPage, at: pdfDocumentToWrite.pageCount)
-                
-                if (combinedPDFDocumentPageIndex + 1) % self.numberOfPagesPerPDFDocument == 0 {
+                for pdfDocumentIndex: Int in 0...numberOfPDFDocuments - 1 {
+                    for pdfDocumentPageIndex: Int in 0...self.numberOfPagesPerPDFDocument - 1 {
+                        pdfPage = self.combinedPDFDocument.page(at: (pdfDocumentPageIndex * numberOfPDFDocuments + pdfDocumentIndex))!
+                        
+                        self.updateGradesForPDFDocumentPage(pdfPage: pdfPage, allPDFDocumentGrades: &allPDFDocumentGrades, pdfDocumentIndex: pdfDocumentIndex, pdfDocumentPageIndex: pdfDocumentPageIndex)
+                        
+                        pdfDocumentToWrite.insert(pdfPage, at: pdfDocumentToWrite.pageCount)
+                    }
+                    
                     pdfDocumentToWrite.write(toFile: "\(documentsPath)/\(self.pdfDocumentFileNames[pdfDocumentIndex]).pdf")
                     
                     pdfDocumentToWrite = PDFDocument()
                 }
+            } else {
+                var pdfDocumentIndex: Int
+                
+                for combinedPDFDocumentPageIndex: Int in 0...self.combinedPDFDocument.pageCount - 1 {
+                    pdfPage = self.combinedPDFDocument.page(at: combinedPDFDocumentPageIndex)!
+                    
+                    pdfDocumentIndex = combinedPDFDocumentPageIndex / self.numberOfPagesPerPDFDocument
+                    
+                    self.updateGradesForPDFDocumentPage(pdfPage: pdfPage, allPDFDocumentGrades: &allPDFDocumentGrades, pdfDocumentIndex: pdfDocumentIndex, pdfDocumentPageIndex: combinedPDFDocumentPageIndex % self.numberOfPagesPerPDFDocument)
+                    
+                    pdfDocumentToWrite.insert(pdfPage, at: pdfDocumentToWrite.pageCount)
+                    
+                    if (combinedPDFDocumentPageIndex + 1) % self.numberOfPagesPerPDFDocument == 0 {
+                        pdfDocumentToWrite.write(toFile: "\(documentsPath)/\(self.pdfDocumentFileNames[pdfDocumentIndex]).pdf")
+                        
+                        pdfDocumentToWrite = PDFDocument()
+                    }
+                }
+            }
+            
+            self.writeOutGradesAsCSV(grades: allPDFDocumentGrades)
+            
+            DispatchQueue.main.async {
+                self.stopActivityIndicator()
             }
         }
-        
-        self.writeOutGradesAsCSV(grades: allPDFDocumentGrades)
     }
     
     @IBAction func viewPerPDFPage(_ viewPerPDFPageButton: UIBarButtonItem) -> Void {
         if self.isPerPDFPageMode == true {
             return
         }
+        
+        self.startActivityIndicator()
         
         self.isPerPDFPageMode = true
         
@@ -132,23 +144,31 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         let numberOfPDFDocuments: Int = self.combinedPDFDocument.pageCount / self.numberOfPagesPerPDFDocument
         
-        for pdfDocumentPageIndex: Int in 0...self.numberOfPagesPerPDFDocument - 1 {
-            for pdfDocumentIndex: Int in 0...numberOfPDFDocuments - 1 {
-                perPDFPageCombinedPDFDocument.insert(self.combinedPDFDocument.page(at: pdfDocumentIndex * self.numberOfPagesPerPDFDocument + pdfDocumentPageIndex)!, at: perPDFPageCombinedPDFDocument.pageCount)
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            for pdfDocumentPageIndex: Int in 0...self.numberOfPagesPerPDFDocument - 1 {
+                for pdfDocumentIndex: Int in 0...numberOfPDFDocuments - 1 {
+                    perPDFPageCombinedPDFDocument.insert(self.combinedPDFDocument.page(at: pdfDocumentIndex * self.numberOfPagesPerPDFDocument + pdfDocumentPageIndex)!, at: perPDFPageCombinedPDFDocument.pageCount)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.stopActivityIndicator()
+                
+                self.combinedPDFDocument = perPDFPageCombinedPDFDocument
+                
+                self.pdfView.document = self.combinedPDFDocument
+                
+                self.pdfView.go(to: currentPDFPage)
             }
         }
-        
-        self.combinedPDFDocument = perPDFPageCombinedPDFDocument
-        
-        self.pdfView.document = self.combinedPDFDocument
-        
-        self.pdfView.go(to: currentPDFPage)
     }
     
     @IBAction func viewPerPDFDocument(_ viewPerPDFDocumentButton: UIBarButtonItem) -> Void {
         if self.isPerPDFPageMode == false {
             return
         }
+        
+        self.startActivityIndicator()
         
         self.isPerPDFPageMode = false
         
@@ -161,17 +181,23 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         let numberOfPDFDocuments: Int = self.combinedPDFDocument.pageCount / self.numberOfPagesPerPDFDocument
         
-        for pdfDocumentIndex: Int in 0...numberOfPDFDocuments - 1 {
-            for pdfDocumentPageIndex: Int in 0...self.numberOfPagesPerPDFDocument - 1 {
-                perPDFDocumentCombinedPDFDocument.insert(self.combinedPDFDocument.page(at: pdfDocumentPageIndex * numberOfPDFDocuments + pdfDocumentIndex)!, at: perPDFDocumentCombinedPDFDocument.pageCount)
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            for pdfDocumentIndex: Int in 0...numberOfPDFDocuments - 1 {
+                for pdfDocumentPageIndex: Int in 0...self.numberOfPagesPerPDFDocument - 1 {
+                    perPDFDocumentCombinedPDFDocument.insert(self.combinedPDFDocument.page(at: pdfDocumentPageIndex * numberOfPDFDocuments + pdfDocumentIndex)!, at: perPDFDocumentCombinedPDFDocument.pageCount)
+                }
+            }
+            
+            DispatchQueue.main.async {
+                self.stopActivityIndicator()
+                
+                self.combinedPDFDocument = perPDFDocumentCombinedPDFDocument
+                
+                self.pdfView.document = self.combinedPDFDocument
+                
+                self.pdfView.go(to: currentPDFPage)
             }
         }
-        
-        self.combinedPDFDocument = perPDFDocumentCombinedPDFDocument
-        
-        self.pdfView.document = self.combinedPDFDocument
-        
-        self.pdfView.go(to: currentPDFPage)
     }
     
     @IBAction func doneEditing(_ doneEditingButton: UIBarButtonItem) -> Void {
@@ -246,6 +272,13 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.view.addSubview(self.pdfView)
         
+        self.overlayView.frame = self.view.bounds
+        self.overlayView.autoresizingMask = [UIViewAutoresizing.flexibleWidth, UIViewAutoresizing.flexibleHeight]
+        
+        self.overlayView.addSubview(self.uiActivityIndicatorView)
+        
+        self.pdfView.addSubview(self.overlayView)
+        
         self.ezGraderMode = EZGraderMode.viewPDFDocuments
         
         self.appDefaultButtonTintColor = self.viewPerPDFPageButton.tintColor
@@ -253,19 +286,11 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.leftCurrentPageWhenFreeHandAnnotating = false
         
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        
         self.navigationItem.backBarButtonItem?.title = ""
         
         self.updateNavigationBar()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) -> Void {
-        super.viewWillAppear(true)
-        
-        navigationController?.setNavigationBarHidden(false, animated: true)
-    }
-    
-    override func didReceiveMemoryWarning() -> Void {
-        super.didReceiveMemoryWarning()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) -> Void {
@@ -625,6 +650,26 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         let fontAttributes: [NSAttributedStringKey: UIFont] = [NSAttributedStringKey.font: font]
         
         return text.size(withAttributes: fontAttributes)
+    }
+    
+    private func startActivityIndicator() -> Void {
+        if !self.uiActivityIndicatorView.isAnimating {
+            self.overlayView.backgroundColor = UIColor.clear.withAlphaComponent(0.4)
+            
+            UIApplication.shared.beginIgnoringInteractionEvents()
+            
+            self.uiActivityIndicatorView.startAnimating()
+        }
+    }
+    
+    private func stopActivityIndicator() -> Void {
+        if self.uiActivityIndicatorView.isAnimating {
+            self.overlayView.backgroundColor = UIColor.clear
+            
+            self.uiActivityIndicatorView.stopAnimating()
+            
+            UIApplication.shared.endIgnoringInteractionEvents()
+        }
     }
     
     private func updateNavigationBar() -> Void {
