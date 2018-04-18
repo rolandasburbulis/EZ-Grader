@@ -569,7 +569,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
             tappedGradeAnnotation.contents = editedGradeText
         }
         
-        let removeGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Remove", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
+        let removeGradeFromAllPDFDocumentsUIAlertAction: UIAlertAction = UIAlertAction(title: "Remove from All", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
             //Filter annotations on the page to only return grade annotations
             let gradeAnnotations: [PDFAnnotation] = tappedGradeAnnotation.page!.annotations.filter({ (pdfAnnotation: PDFAnnotation) -> Bool in
                 return pdfAnnotation.annotationKeyValues[PDFAnnotationKey.widgetCaption] as? String == "Grade Annotation"
@@ -599,7 +599,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         
         editRemoveGradeUIAlertController.addAction(editGradeUIAlertAction)
-        editRemoveGradeUIAlertController.addAction(removeGradeUIAlertAction)
+        editRemoveGradeUIAlertController.addAction(removeGradeFromAllPDFDocumentsUIAlertAction)
         editRemoveGradeUIAlertController.addAction(cancelEditGradeUIAlertAction)
         
         self.present(editRemoveGradeUIAlertController, animated: true, completion: nil)
