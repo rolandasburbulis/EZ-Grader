@@ -559,10 +559,10 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func showEditRemoveGradeDialog(tappedGradeAnnotation: PDFAnnotation) -> Void {
-        let editGradeUIAlertController = UIAlertController(title: "Edit/Remove Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        let editRemoveGradeUIAlertController = UIAlertController(title: "Edit/Remove Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
         
         let editGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Edit", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
-            let editedGradeText: String = (editGradeUIAlertController.textFields?[0].text)! + " / " + (editGradeUIAlertController.textFields?[1].text)!
+            let editedGradeText: String = (editRemoveGradeUIAlertController.textFields?[0].text)! + " / " + (editRemoveGradeUIAlertController.textFields?[1].text)!
             let editedGradeTextSize: CGSize = self.getTextSize(text: editedGradeText + "  ")
             
             tappedGradeAnnotation.bounds.size = CGSize(width: editedGradeTextSize.height, height: editedGradeTextSize.width)
@@ -584,13 +584,13 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
             return gradeComponent.trimmingCharacters(in: CharacterSet.whitespaces)
         })
         
-        editGradeUIAlertController.addTextField { (pointsEarnedTextField: UITextField) in
+        editRemoveGradeUIAlertController.addTextField { (pointsEarnedTextField: UITextField) in
             pointsEarnedTextField.placeholder = "Points Earned"
             pointsEarnedTextField.keyboardType = UIKeyboardType.decimalPad
             pointsEarnedTextField.text = gradeComponents[0]
         }
         
-        editGradeUIAlertController.addTextField { (maximumPointsTextField: UITextField) in
+        editRemoveGradeUIAlertController.addTextField { (maximumPointsTextField: UITextField) in
             maximumPointsTextField.placeholder = "Maximum Points"
             maximumPointsTextField.keyboardType = UIKeyboardType.decimalPad
             maximumPointsTextField.isEnabled = false
@@ -598,11 +598,11 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
             maximumPointsTextField.text = gradeComponents[1]
         }
         
-        editGradeUIAlertController.addAction(editGradeUIAlertAction)
-        editGradeUIAlertController.addAction(removeGradeUIAlertAction)
-        editGradeUIAlertController.addAction(cancelEditGradeUIAlertAction)
+        editRemoveGradeUIAlertController.addAction(editGradeUIAlertAction)
+        editRemoveGradeUIAlertController.addAction(removeGradeUIAlertAction)
+        editRemoveGradeUIAlertController.addAction(cancelEditGradeUIAlertAction)
         
-        self.present(editGradeUIAlertController, animated: true, completion: nil)
+        self.present(editRemoveGradeUIAlertController, animated: true, completion: nil)
     }
     
     private func addGradeToAllPDFDocuments(pointsEarned: String, maximumPoints: String, touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
