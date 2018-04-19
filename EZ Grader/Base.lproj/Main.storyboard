@@ -80,9 +80,14 @@
                                     <action selector="freeHandAnnotate:" destination="k82-2b-n8M" id="8Yl-OA-zlj"/>
                                 </connections>
                             </barButtonItem>
+                            <barButtonItem image="EraseFreeHandAnnotationIcon" landscapeImage="EraseFreeHandAnnotationIcon" largeContentSizeImage="EraseFreeHandAnnotationIcon" id="WNp-JP-E36">
+                                <connections>
+                                    <action selector="eraseFreeHandAnnotation:" destination="k82-2b-n8M" id="GmY-u0-wyq"/>
+                                </connections>
+                            </barButtonItem>
                             <barButtonItem image="TextAnnotateIcon" landscapeImage="TextAnnotateIcon" largeContentSizeImage="TextAnnotateIcon" id="7lx-ce-2hC">
                                 <connections>
-                                    <action selector="textAnnotate:" destination="k82-2b-n8M" id="KpV-LO-pDl"/>
+                                    <action selector="textAnnotate:" destination="k82-2b-n8M" id="ca1-Qx-oNr"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem image="AddGradeIcon" landscapeImage="AddGradeIcon" largeContentSizeImage="AddGradeIcon" id="ldi-TE-lex">
@@ -117,11 +122,12 @@
                     <connections>
                         <outlet property="addGradeButton" destination="ldi-TE-lex" id="cuZ-n9-h2F"/>
                         <outlet property="doneEditingButton" destination="O0y-kN-csk" id="l21-1t-gtC"/>
+                        <outlet property="eraseFreeHandAnnotationButton" destination="WNp-JP-E36" id="nzn-SC-GLK"/>
                         <outlet property="freeHandAnnotateButton" destination="bna-M0-A0I" id="zF2-No-0gB"/>
                         <outlet property="overlayView" destination="iN7-lW-wnh" id="kZe-fz-FmQ"/>
                         <outlet property="pdfView" destination="JSU-1C-TOB" id="nHo-WU-vfO"/>
                         <outlet property="saveButton" destination="PgH-l5-1hq" id="iad-RO-gpv"/>
-                        <outlet property="textAnnotateButton" destination="7lx-ce-2hC" id="eDo-8a-QdI"/>
+                        <outlet property="textAnnotateButton" destination="7lx-ce-2hC" id="XAr-eo-F16"/>
                         <outlet property="uiActivityIndicatorView" destination="NFS-Ny-Gnc" id="QXZ-4T-fCL"/>
                         <outlet property="viewPerPDFDocumentButton" destination="lYr-ft-eft" id="OYZ-9E-B5v"/>
                         <outlet property="viewPerPDFPageButton" destination="0YX-0w-NbB" id="aZt-5l-tgg"/>
@@ -158,6 +164,7 @@
     <resources>
         <image name="AddGradeIcon" width="16" height="16"/>
         <image name="DoneEditingIcon" width="16" height="16"/>
+        <image name="EraseFreeHandAnnotationIcon" width="16" height="16"/>
         <image name="FreeHandAnnotateIcon" width="16" height="16"/>
         <image name="SaveIcon" width="16" height="16"/>
         <image name="TextAnnotateIcon" width="16" height="16"/>

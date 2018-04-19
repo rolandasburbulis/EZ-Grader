@@ -10,6 +10,7 @@ import PDFKit
 enum EZGraderMode {
     case viewPDFDocuments
     case freeHandAnnotate
+    case eraseFreeHandAnnotation
     case textAnnotate
     case addGrade
 }
@@ -34,6 +35,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet var overlayView: UIView!
     @IBOutlet var uiActivityIndicatorView: UIActivityIndicatorView!
     @IBOutlet var freeHandAnnotateButton: UIBarButtonItem!
+    @IBOutlet var eraseFreeHandAnnotationButton: UIBarButtonItem!
     @IBOutlet var textAnnotateButton: UIBarButtonItem!
     @IBOutlet var addGradeButton: UIBarButtonItem!
     @IBOutlet var saveButton: UIBarButtonItem!
@@ -48,6 +50,12 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.pdfView.isUserInteractionEnabled = false
         
         self.ezGraderMode = EZGraderMode.freeHandAnnotate
+        
+        self.updateNavigationBar()
+    }
+    
+    @IBAction func eraseFreeHandAnnotation(_ eraseFreeHandAnnotationButton: UIBarButtonItem) -> Void {
+        self.ezGraderMode = EZGraderMode.eraseFreeHandAnnotation
         
         self.updateNavigationBar()
     }
@@ -215,24 +223,35 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     @IBAction func tap(_ uiTapGestureRecognizer: UITapGestureRecognizer) -> Void {
-        if self.ezGraderMode == EZGraderMode.viewPDFDocuments {
+        if self.ezGraderMode == EZGraderMode.viewPDFDocuments || self.ezGraderMode == EZGraderMode.eraseFreeHandAnnotation {
             if uiTapGestureRecognizer.state == UIGestureRecognizerState.recognized {
                 let tapViewCoordinate: CGPoint = uiTapGestureRecognizer.location(in: self.pdfView)
                 let pdfPageAtTappedPosition: PDFPage = self.pdfView.page(for: tapViewCoordinate, nearest: true)!
                 let tapPDFPageCoordinate: CGPoint = self.pdfView.convert(tapViewCoordinate, to: pdfPageAtTappedPosition)
                 
-                //Filter annotations on the page to only return tapped freetext PDF annotations
-                let tappedFreeTextPDFAnnotations: [PDFAnnotation] = pdfPageAtTappedPosition.annotations.filter({ (pdfAnnotation: PDFAnnotation) -> Bool in
-                    return pdfAnnotation.type! == PDFAnnotationSubtype.freeText.rawValue.replacingOccurrences(of: "/", with: "") && pdfAnnotation.bounds.contains(tapPDFPageCoordinate)
-                })
-                
-                if tappedFreeTextPDFAnnotations.count > 0 {
-                    let topTappedFreeTextPDFAnnotation: PDFAnnotation = tappedFreeTextPDFAnnotations[tappedFreeTextPDFAnnotations.count - 1]
-                
-                    if topTappedFreeTextPDFAnnotation.annotationKeyValues[PDFAnnotationKey.widgetCaption] as? String == "Text Annotation" {
-                        self.showEditRemoveTextAnnotationDialog(tappedTextAnnotation: topTappedFreeTextPDFAnnotation)
-                    } else {
-                        self.showEditRemoveGradeDialog(tappedGradeAnnotation: topTappedFreeTextPDFAnnotation)
+                if self.ezGraderMode == EZGraderMode.viewPDFDocuments {
+                    //Filter annotations on the page to only return tapped freetext PDF annotations
+                    let tappedFreeTextPDFAnnotations: [PDFAnnotation] = pdfPageAtTappedPosition.annotations.filter({ (pdfAnnotation: PDFAnnotation) -> Bool in
+                        return pdfAnnotation.type! == PDFAnnotationSubtype.freeText.rawValue.replacingOccurrences(of: "/", with: "") && pdfAnnotation.bounds.contains(tapPDFPageCoordinate)
+                    })
+                    
+                    if tappedFreeTextPDFAnnotations.count > 0 {
+                        let topTappedFreeTextPDFAnnotation: PDFAnnotation = tappedFreeTextPDFAnnotations[tappedFreeTextPDFAnnotations.count - 1]
+                    
+                        if topTappedFreeTextPDFAnnotation.annotationKeyValues[PDFAnnotationKey.widgetCaption] as? String == "Text Annotation" {
+                            self.showEditRemoveTextAnnotationDialog(tappedTextAnnotation: topTappedFreeTextPDFAnnotation)
+                        } else {
+                            self.showEditRemoveGradeDialog(tappedGradeAnnotation: topTappedFreeTextPDFAnnotation)
+                        }
+                    }
+                } else {
+                    //Filter annotations on the page to only return tapped ink PDF annotations
+                    let tappedInkPDFAnnotations: [PDFAnnotation] = pdfPageAtTappedPosition.annotations.filter({ (pdfAnnotation: PDFAnnotation) -> Bool in
+                        return pdfAnnotation.type! == PDFAnnotationSubtype.ink.rawValue.replacingOccurrences(of: "/", with: "") && pdfAnnotation.paths![0].bounds.contains(tapPDFPageCoordinate)
+                    })
+                    
+                    if tappedInkPDFAnnotations.count > 0 {
+                        pdfPageAtTappedPosition.removeAnnotation(tappedInkPDFAnnotations[tappedInkPDFAnnotations.count - 1])
                     }
                 }
             }
@@ -691,11 +710,12 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     private func updateNavigationBar() -> Void {
         switch self.ezGraderMode {
         case EZGraderMode.viewPDFDocuments?:
-            self.navigationItem.leftBarButtonItems = [self.freeHandAnnotateButton, self.textAnnotateButton, self.addGradeButton, self.saveButton]
+            self.navigationItem.leftBarButtonItems = [self.freeHandAnnotateButton, self.eraseFreeHandAnnotationButton, self.textAnnotateButton, self.addGradeButton, self.saveButton]
             self.navigationItem.rightBarButtonItems = [self.viewPerPDFDocumentButton, self.viewPerPDFPageButton]
             self.navigationItem.hidesBackButton = false
             self.navigationItem.title = ""
         case EZGraderMode.freeHandAnnotate?,
+             EZGraderMode.eraseFreeHandAnnotation?,
              EZGraderMode.textAnnotate?,
              EZGraderMode.addGrade?:
             self.navigationItem.leftBarButtonItems = []
@@ -703,11 +723,14 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
             self.navigationItem.hidesBackButton = true
             
             switch self.ezGraderMode {
-            case EZGraderMode.freeHandAnnotate?,
-                 EZGraderMode.textAnnotate?:
-                self.navigationItem.title = "Annotating"
+            case EZGraderMode.freeHandAnnotate?:
+                self.navigationItem.title = "Free-Hand Annotate"
+            case EZGraderMode.eraseFreeHandAnnotation?:
+                self.navigationItem.title = "Tap Free-Hand Annotation to Erase"
+            case EZGraderMode.textAnnotate?:
+                self.navigationItem.title = "Tap to Add Text"
             case EZGraderMode.addGrade?:
-                self.navigationItem.title = "Adding Grades"
+                self.navigationItem.title = "Tap to Add Grade"
             default:
                 break
             }
