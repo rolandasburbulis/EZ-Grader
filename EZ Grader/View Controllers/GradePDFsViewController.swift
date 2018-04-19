@@ -34,6 +34,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet weak var pdfView: PDFView!
     @IBOutlet var overlayView: UIView!
     @IBOutlet var uiActivityIndicatorView: UIActivityIndicatorView!
+    @IBOutlet var backButton: UIBarButtonItem!
     @IBOutlet var freeHandAnnotateButton: UIBarButtonItem!
     @IBOutlet var eraseFreeHandAnnotationButton: UIBarButtonItem!
     @IBOutlet var textAnnotateButton: UIBarButtonItem!
@@ -44,6 +45,21 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBOutlet var doneEditingButton: UIBarButtonItem!
     
     //MARK: Actions
+    @IBAction func back(_ backButton: UIBarButtonItem) {
+        let confirmGoBackUIAlertController: UIAlertController = UIAlertController(title: "Leave Assignment?", message: "Are you sure you want to leave this assignment?  All changes made since assignment was last saved will be lost.", preferredStyle: UIAlertControllerStyle.alert)
+        
+        let confirmGoBackUIAlertAction: UIAlertAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.destructive) { (alert: UIAlertAction!) in
+            self.navigationController?.popViewController(animated: true)
+        }
+        
+        let cancelGoBackUIAlertAction: UIAlertAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel) { (alert: UIAlertAction!) in }
+        
+        confirmGoBackUIAlertController.addAction(confirmGoBackUIAlertAction)
+        confirmGoBackUIAlertController.addAction(cancelGoBackUIAlertAction)
+        
+        self.present(confirmGoBackUIAlertController, animated: true, completion: nil)
+    }
+    
     @IBAction func freeHandAnnotate(_ freeHandAnnotateButton: UIBarButtonItem) -> Void {
         self.currentFreeHandPDFAnnotationBezierPath = UIBezierPath()
         
@@ -293,6 +309,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         self.leftCurrentPageWhenFreeHandAnnotating = false
         
         self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationItem.hidesBackButton = true
         
         self.updateNavigationBar()
         
@@ -493,7 +510,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func showAddTextAnnotationDialog(touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
-        let addTextAnnotationUIAlertController = UIAlertController(title: "Add Text Annotation", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        let addTextAnnotationUIAlertController: UIAlertController = UIAlertController(title: "Add Text Annotation", message: "", preferredStyle: UIAlertControllerStyle.alert)
         
         let addTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Add", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
             let enteredText: String = (addTextAnnotationUIAlertController.textFields?[0].text)!
@@ -524,7 +541,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func showEditRemoveTextAnnotationDialog(tappedTextAnnotation: PDFAnnotation) -> Void {
-        let editRemoveTextAnnotationUIAlertController = UIAlertController(title: "Edit/Remove Text Annotation", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        let editRemoveTextAnnotationUIAlertController: UIAlertController = UIAlertController(title: "Edit/Remove Text Annotation", message: "", preferredStyle: UIAlertControllerStyle.alert)
         
         let editTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Edit", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
             let editedText: String = (editRemoveTextAnnotationUIAlertController.textFields?[0].text)!
@@ -534,7 +551,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
             tappedTextAnnotation.contents = editedText
         }
         
-        let removeTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Remove", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
+        let removeTextAnnotationUIAlertAction: UIAlertAction = UIAlertAction(title: "Remove", style: UIAlertActionStyle.destructive) { (alert: UIAlertAction!) in
             tappedTextAnnotation.page?.removeAnnotation(tappedTextAnnotation)
         }
         
@@ -553,7 +570,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func showAddGradeDialog(touchPDFPageCoordinate: CGPoint, pdfDocumentPageIndexAtTouchedPosition: Int) -> Void {
-        let addGradeUIAlertController = UIAlertController(title: "Add Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        let addGradeUIAlertController: UIAlertController = UIAlertController(title: "Add Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
         
         let addGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Add", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
             self.addGradeToAllPDFDocuments(pointsEarned: (addGradeUIAlertController.textFields?[0].text)!, maximumPoints: (addGradeUIAlertController.textFields?[1].text)!, touchPDFPageCoordinate: touchPDFPageCoordinate, pdfDocumentPageIndexAtTouchedPosition: pdfDocumentPageIndexAtTouchedPosition)
@@ -578,7 +595,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     private func showEditRemoveGradeDialog(tappedGradeAnnotation: PDFAnnotation) -> Void {
-        let editRemoveGradeUIAlertController = UIAlertController(title: "Edit/Remove Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        let editRemoveGradeUIAlertController: UIAlertController = UIAlertController(title: "Edit/Remove Grade", message: "", preferredStyle: UIAlertControllerStyle.alert)
         
         let editGradeUIAlertAction: UIAlertAction = UIAlertAction(title: "Edit", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
             let editedGradeText: String = (editRemoveGradeUIAlertController.textFields?[0].text)! + " / " + (editRemoveGradeUIAlertController.textFields?[1].text)!
@@ -588,7 +605,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
             tappedGradeAnnotation.contents = editedGradeText
         }
         
-        let removeGradeFromAllPDFDocumentsUIAlertAction: UIAlertAction = UIAlertAction(title: "Remove from All", style: UIAlertActionStyle.default) { (alert: UIAlertAction!) in
+        let removeGradeFromAllPDFDocumentsUIAlertAction: UIAlertAction = UIAlertAction(title: "Remove from All", style: UIAlertActionStyle.destructive) { (alert: UIAlertAction!) in
             //Filter annotations on the page to only return grade annotations
             let gradeAnnotations: [PDFAnnotation] = tappedGradeAnnotation.page!.annotations.filter({ (pdfAnnotation: PDFAnnotation) -> Bool in
                 return pdfAnnotation.annotationKeyValues[PDFAnnotationKey.widgetCaption] as? String == "Grade Annotation"
@@ -710,9 +727,9 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     private func updateNavigationBar() -> Void {
         switch self.ezGraderMode {
         case EZGraderMode.viewPDFDocuments?:
-            self.navigationItem.leftBarButtonItems = [self.freeHandAnnotateButton, self.eraseFreeHandAnnotationButton, self.textAnnotateButton, self.addGradeButton, self.saveButton]
+            self.navigationItem.leftBarButtonItems = [self.backButton, self.freeHandAnnotateButton, self.eraseFreeHandAnnotationButton, self.textAnnotateButton, self.addGradeButton, self.saveButton]
             self.navigationItem.rightBarButtonItems = [self.viewPerPDFDocumentButton, self.viewPerPDFPageButton]
-            self.navigationItem.hidesBackButton = false
+
             self.navigationItem.title = ""
         case EZGraderMode.freeHandAnnotate?,
              EZGraderMode.eraseFreeHandAnnotation?,
@@ -720,7 +737,6 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
              EZGraderMode.addGrade?:
             self.navigationItem.leftBarButtonItems = []
             self.navigationItem.rightBarButtonItems = [self.doneEditingButton]
-            self.navigationItem.hidesBackButton = true
             
             switch self.ezGraderMode {
             case EZGraderMode.freeHandAnnotate?:
