@@ -11,20 +11,20 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Select Folder To Grade View Controller-->
+        <!--SelectPDF Documents To Grade View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="SelectFolderToGradeViewController" customModule="EZ_Grader" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="SelectPDFDocumentsToGradeViewController" customModule="EZ_Grader" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="center" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ad-w9-bkh" userLabel="Start Grading Button">
-                                <rect key="frame" x="75.5" y="306" width="224" height="55"/>
+                            <button opaque="NO" contentMode="center" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ad-w9-bkh" userLabel="Select PDFs to Grade">
+                                <rect key="frame" x="11.5" y="306" width="352" height="55"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
-                                <state key="normal" title="Start Grading"/>
+                                <state key="normal" title="Select PDFs to Grade"/>
                                 <connections>
-                                    <segue destination="k82-2b-n8M" kind="show" identifier="showGradePDFsViewControllerSegueId" id="oOU-np-ir5"/>
+                                    <action selector="selectPDFsToGrade:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XmU-Cm-zDl"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -36,6 +36,9 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="aur-6e-mcZ"/>
+                    <connections>
+                        <segue destination="k82-2b-n8M" kind="show" identifier="selectedPDFDocumentsToGradeSegue" id="8FN-qu-3AW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

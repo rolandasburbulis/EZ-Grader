@@ -28,6 +28,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     var isPerPDFPageMode: Bool!
     var isDot: Bool!
     var appDefaultButtonTintColor: UIColor!
+    var pdfDocumentURLs: [URL] = []
     var pdfDocumentFileNames: [String] = []
     
     //MARK: Properties
@@ -279,9 +280,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         self.startActivityIndicator()
         
-        let pdfDocumentURLs: [URL] = Bundle.main.urls(forResourcesWithExtension: "pdf", subdirectory: nil)!
-        
-        for pdfDocumentURL: URL in pdfDocumentURLs {
+        for pdfDocumentURL: URL in self.pdfDocumentURLs {
             self.pdfDocumentFileNames.append(pdfDocumentURL.deletingPathExtension().lastPathComponent)
 
             if self.numberOfPagesPerPDFDocument == nil {
@@ -315,7 +314,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
         
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             for pdfDocumentPageIndex: Int in 0...self.numberOfPagesPerPDFDocument - 1 {
-                for pdfDocumentURL: URL in pdfDocumentURLs {
+                for pdfDocumentURL: URL in self.pdfDocumentURLs {
                     let pdfPage: PDFPage = (PDFDocument(url: pdfDocumentURL)!.page(at: pdfDocumentPageIndex))!
                     
                     self.combinedPDFDocument.insert(pdfPage, at: self.combinedPDFDocument.pageCount)
