@@ -515,7 +515,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
             let enteredText: String = (addTextAnnotationUIAlertController.textFields?[0].text)!
             let enteredTextSize: CGSize = self.getTextSize(text: enteredText + "  ")
             
-            let textAnnotationFreeTextPDFAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPDFPageCoordinate, size: CGSize(width: enteredTextSize.height, height: enteredTextSize.width)), forType: PDFAnnotationSubtype.freeText, withProperties: nil)
+            let textAnnotationFreeTextPDFAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPDFPageCoordinate, size: CGSize(width: enteredTextSize.width, height: enteredTextSize.height)), forType: PDFAnnotationSubtype.freeText, withProperties: nil)
             
             textAnnotationFreeTextPDFAnnotation.fontColor = UIColor.red
             textAnnotationFreeTextPDFAnnotation.font = UIFont.systemFont(ofSize: self.appFontSize)
@@ -546,7 +546,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
             let editedText: String = (editRemoveTextAnnotationUIAlertController.textFields?[0].text)!
             let editedTextSize: CGSize = self.getTextSize(text: editedText + "  ")
             
-            tappedTextAnnotation.bounds.size = CGSize(width: editedTextSize.height, height: editedTextSize.width)
+            tappedTextAnnotation.bounds.size = CGSize(width: editedTextSize.width, height: editedTextSize.height)
             tappedTextAnnotation.contents = editedText
         }
         
@@ -600,7 +600,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
             let editedGradeText: String = (editRemoveGradeUIAlertController.textFields?[0].text)! + " / " + (editRemoveGradeUIAlertController.textFields?[1].text)!
             let editedGradeTextSize: CGSize = self.getTextSize(text: editedGradeText + "  ")
             
-            tappedGradeAnnotation.bounds.size = CGSize(width: editedGradeTextSize.height, height: editedGradeTextSize.width)
+            tappedGradeAnnotation.bounds.size = CGSize(width: editedGradeTextSize.width, height: editedGradeTextSize.height)
             tappedGradeAnnotation.contents = editedGradeText
         }
         
@@ -684,7 +684,7 @@ class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
     private func createGradeFreeTextAnnotation(gradeText: String, touchPDFPageCoordinate: CGPoint) -> PDFAnnotation {
         let gradeTextSize: CGSize = self.getTextSize(text: gradeText + "  ")
         
-        let gradeFreeTextPDFAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPDFPageCoordinate, size: CGSize(width: gradeTextSize.height, height: gradeTextSize.width)), forType: PDFAnnotationSubtype.freeText, withProperties: nil)
+        let gradeFreeTextPDFAnnotation: PDFAnnotation = PDFAnnotation(bounds: CGRect(origin: touchPDFPageCoordinate, size: CGSize(width: gradeTextSize.width, height: gradeTextSize.height)), forType: PDFAnnotationSubtype.freeText, withProperties: nil)
         
         gradeFreeTextPDFAnnotation.fontColor = UIColor.red
         gradeFreeTextPDFAnnotation.font = UIFont.systemFont(ofSize: self.appFontSize)
