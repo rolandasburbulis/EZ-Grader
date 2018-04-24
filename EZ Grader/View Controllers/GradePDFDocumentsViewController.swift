@@ -15,7 +15,7 @@ enum EZGraderMode {
     case addGrade
 }
 
-class GradePDFsViewController: UIViewController, UIGestureRecognizerDelegate {
+class GradePDFDocumentsViewController: UIViewController, UIGestureRecognizerDelegate {
     let appFontSize: CGFloat = 30
     
     var ezGraderMode: EZGraderMode?

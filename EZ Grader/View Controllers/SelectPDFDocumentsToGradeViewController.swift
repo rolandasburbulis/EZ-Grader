@@ -29,7 +29,7 @@ class SelectPDFDocumentsToGradeViewController: UIViewController, UIDocumentPicke
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let gradePDFsViewController: GradePDFsViewController = segue.destination as? GradePDFsViewController {
+        if let gradePDFsViewController: GradePDFDocumentsViewController = segue.destination as? GradePDFDocumentsViewController {
             gradePDFsViewController.pdfDocumentURLs = self.selectedPDFDocumentToGradeURLs
         }
     }

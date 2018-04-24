@@ -44,10 +44,10 @@
             </objects>
             <point key="canvasLocation" x="414" y="-42"/>
         </scene>
-        <!--GradePD Fs View Controller-->
+        <!--GradePDF Documents View Controller-->
         <scene sceneID="SPj-TH-MaM">
             <objects>
-                <viewController id="k82-2b-n8M" customClass="GradePDFsViewController" customModule="EZ_Grader" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="k82-2b-n8M" customClass="GradePDFDocumentsViewController" customModule="EZ_Grader" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Yle-N9-hjB">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
